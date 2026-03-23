@@ -91,7 +91,7 @@ export default function Footer() {
       <div className="mt-14 pt-6 border-t border-[#1a1a1a] flex flex-col md:flex-row justify-between items-center gap-4">
 
         <p className="text-[#666] text-xs">
-          © 2026 Mark Real Estate. All rights reserved.
+          © 2026 Mark Real Esstate. All rights reserved.
         </p>
 
         <p className="text-[#666] text-xs tracking-wide">
