@@ -63,7 +63,16 @@ export default function Page() {
 const [success, setSuccess] = useState(false);
 const [loading, setLoading] = useState(false);
 const [activeIndex, setActiveIndex] = useState<number>(0);
+const videoRef = useRef<HTMLVideoElement>(null);
+const [isMuted, setIsMuted] = useState(true);
+const toggleSound = () => {
+  if (!videoRef.current) return;
 
+  videoRef.current.muted = !videoRef.current.muted;
+  setIsMuted(videoRef.current.muted);
+
+  videoRef.current.play(); // ensures playback resumes
+};
 const videos: string[] = [
   "/videos/testimonials/video1.mp4",
   "/videos/testimonials/video2.mp4",
@@ -84,192 +93,141 @@ const prevSlide = () => {
     <main style={{ background: "#0A0A0A", color: "#E8E2D9" }}>
 
       <Header />
+<section className="relative w-full h-[100svh] md:h-[100dvh] overflow-hidden">
 
-  {/* ═════════ HERO ═════════ */}
-<section
-  style={{
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    padding: "100px 20px",
-  }}
->
-  <div className="w-full max-w-6xl mx-auto grid gap-8 md:gap-10 lg:gap-12 items-center md:grid-cols-[1fr_380px] lg:grid-cols-[1fr_420px]">
-
-    {/* IMAGE (TOP ON MOBILE) */}
-   <motion.div
-  whileHover={{ scale: 1.02 }}
-  style={{ transformOrigin: "left center" }}
-  className="relative mx-auto md:ml-auto w-full max-w-[280px] md:max-w-[380px] aspect-[3/4] order-1 md:order-2 md:-ml-10 lg:-ml-16"
->
-  <div className="absolute -inset-6 bg-[radial-gradient(circle,rgba(200,164,90,0.12),transparent)]" />
-
-  <Image
-    src="/images/shankar-kohli.jpeg"
-    alt="Shankar Kohli"
-    fill
-    sizes="(max-width: 768px) 280px, (max-width: 1200px) 380px, 380px"
-    className="object-cover object-[50%_20%]"
-    priority
-  />
-</motion.div>
-    {/* TEXT */}
-    <div className="max-w-lg mx-auto order-2 md:order-1 text-left">
-      <Reveal>
-        <p className="text-[#C8A45A] text-[10px] tracking-[0.3em] mb-4">
-          FOUNDER OF MARK REAL ESSTATE
-        </p>
-      </Reveal>
-
-      <Reveal>
-        {/* MOBILE */}
-        <h1 className="block md:hidden text-3xl font-serif mb-4">
-          Shankar Kohli
-        </h1>
-
-        {/* DESKTOP */}
-        <div className="hidden md:block">
-          <h1 className="text-6xl font-serif italic leading-tight">
-            Shankar
-          </h1>
-          <h1 className="text-6xl font-serif mb-5">
-            Kohli
-          </h1>
-        </div>
-      </Reveal>
-
-      <Reveal>
-        <div className="w-10 h-[1px] bg-[#C8A45A] mb-5" />
-      </Reveal>
-
-      <Reveal>
-        <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-6">
-          Helping Gurugram’s most discerning investors acquire ultra-luxury residences with precision, discretion, and unmatched access.
-        </p>
-      </Reveal>
-
-      <Reveal>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.15,
-                delayChildren: 0.2,
-              },
-            },
-          }}
-         className="flex gap-2 md:gap-3 justify-center md:justify-start"
-        >
-
-          {/* PRIMARY CTA */}
-         <motion.button
-  variants={{
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  }}
-  whileHover="hover"
-  whileTap={{ scale: 0.97 }}
-  onClick={() => {
-  document
-    .getElementById("final-cta")
-    ?.scrollIntoView({ behavior: "smooth" });
-}}
-  className="relative flex-1 bg-[#C8A45A] text-black py-2 md:py-3 text-xs md:text-sm tracking-[0.08em] flex items-center justify-center gap-2 overflow-hidden group"
->
-  <span className="absolute inset-0 bg-[#C8A45A]/20 opacity-0 group-hover:opacity-100 transition duration-500 blur-xl" />
-
-  <span className="relative z-10">Book Deep-Dive</span>
-
-  <motion.span
-    className="relative z-10"
-    variants={{ hover: { x: 5 } }}
-    transition={{ duration: 0.3 }}
+  {/* 🎥 DESKTOP VIDEO */}
+  <video
+    ref={videoRef}
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="hidden md:block absolute inset-0 w-full h-full object-cover"
   >
-    →
-  </motion.span>
-</motion.button>
+    <source src="/videos/hero.mp4" type="video/mp4" />
+  </video>
 
-          {/* SECONDARY CTA */}
-          <motion.button
-  variants={{
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  }}
-  whileHover={{
-    borderColor: "#C8A45A",
-    color: "#fff",
-    backgroundColor: "rgba(200,164,90,0.06)",
-  }}
-  whileTap={{ scale: 0.97 }}
-  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-  onClick={() => {
-    document
-      .getElementById("deals")
-      ?.scrollIntoView({ behavior: "smooth" });
-  }}
-  className="flex-1 border border-gray-700 text-[#C8A45A] py-2 md:py-3 text-xs md:text-sm tracking-[0.08em] flex items-center justify-center gap-2 cursor-pointer"
->
-  <span>View Projects</span>
-</motion.button>
+  {/* 🌑 OVERLAY (only for desktop video) */}
+  <div className="hidden md:block absolute inset-0 bg-black/30" />
 
-        </motion.div>
-      </Reveal>
+  {/* 🔊 SOUND BUTTON (desktop only) */}
+  <button
+    onClick={toggleSound}
+    className="hidden md:block absolute bottom-6 right-6 z-20 
+               bg-black/50 backdrop-blur-md text-white 
+               px-4 py-2 text-xs rounded-full"
+  >
+    {isMuted ? "🔇" : "🔊"}
+  </button>
 
+  {/* 📱 MOBILE CONTENT */}
+  <div className="flex md:hidden h-130 items-center justify-center px-1">
 
-<Reveal>
-  <div className="mt-8 pt-6 border-t border-[#1a1a1a] flex flex-wrap md:flex-nowrap gap-y-4 md:gap-x-12 justify-center md:justify-start text-center md:text-left">
+    <div className="w-full max-w-md text-left">
 
-    {stats.map((s, i) => (
-      <div key={i} className="flex flex-col items-center md:items-start flex-1 min-w-[45%] md:min-w-0">
-
-        <span className="text-[#C8A45A]/90 text-sm md:text-base font-serif">
-          {s.value}
-        </span>
-
-        <span className="text-[#555]/80 text-[9px] tracking-[0.12em] mt-1 uppercase whitespace-nowrap">
-          {s.label}
-        </span>
-
+      {/* IMAGE */}
+      <div className="relative mx-auto w-full max-w-[260px] aspect-[3/4] mb-6">
+        <Image
+          src="/images/shankar-kohli.jpeg"
+          alt="Shankar Kohli"
+          fill
+          className="object-cover object-[50%_20%]"
+          priority
+        />
       </div>
-    ))}
 
-  </div>
-</Reveal>
+      {/* TEXT */}
+      <p className="text-[#C8A45A] text-[10px] tracking-[0.3em] mb-3">
+        FOUNDER OF MARK REAL ESSTATE
+      </p>
+
+      <h1 className="text-3xl font-serif mb-4">
+        Shankar Kohli
+      </h1>
+
+      <p className="text-gray-400 text-sm leading-relaxed mb-6">
+        Helping Gurugram’s most discerning investors acquire ultra-luxury residences with precision, discretion, and unmatched access.
+      </p>
+
+      {/* CTA */}
+      <div className="flex gap-3 justify-start">
+
+  <button
+    onClick={() =>
+      document
+        .getElementById("final-cta")
+        ?.scrollIntoView({ behavior: "smooth" })
+    }
+    className="
+      bg-[#C8A45A] text-black 
+
+      px-5 py-3 md:px-4 md:py-2 
+      text-sm md:text-xs 
+
+      tracking-[0.08em] 
+      active:scale-95 
+      transition
+    "
+  >
+    Book Deep-Dive
+  </button>
+
+  <button
+    onClick={() =>
+      document
+        .getElementById("deals")
+        ?.scrollIntoView({ behavior: "smooth" })
+    }
+    className="
+      border border-gray-700 text-[#C8A45A] 
+
+      px-5 py-3 md:px-4 md:py-2 
+      text-sm md:text-xs 
+
+      tracking-[0.08em] 
+      active:scale-95 
+      transition
+    "
+  >
+    View Projects
+  </button>
+
+</div>
+
     </div>
 
   </div>
+
 </section>
-<section id="investors" data-section="investors" className="py-24 md:py-36 px-5 bg-[#0f0f0f]">
-  <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+<section
+  id="investors"
+  data-section="investors"
+  className="py-20 md:py-32 bg-[#0f0f0f]"
+>
+  <div className="w-full grid md:grid-cols-2 items-center">
 
-   <Reveal>
-  <div className="relative w-full h-[340px] md:h-[480px] overflow-hidden group">
+    {/* IMAGE (FULL BLEED) */}
+    <Reveal>
+      <div className="relative w-full h-[340px] md:h-[520px] overflow-hidden group">
 
-    <Image
-      src="/images/luxury-investor.jpg"
-      alt="Luxury Real Estate Advisory"
-      fill
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
-      className="object-cover scale-105 transition duration-700 ease-out group-hover:scale-110"
-    />
+        <Image
+          src="/images/luxury-investor.jpg"
+          alt="Luxury Real Estate Advisory"
+          fill
+          sizes="100vw"
+          className="object-cover scale-105 transition duration-700 ease-out group-hover:scale-110"
+        />
 
-    {/* DARK LUXURY OVERLAY */}
-    <div className="absolute inset-0 bg-black/20 transition duration-700 group-hover:bg-black/30" />
+        {/* OVERLAYS */}
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition duration-700" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 w-24 h-[2px] bg-[#C8A45A]" />
 
-    {/* GRADIENT */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      </div>
+    </Reveal>
 
-    {/* GOLD ACCENT */}
-    <div className="absolute bottom-0 left-0 w-20 h-[2px] bg-[#C8A45A]" />
-
-  </div>
-</Reveal>
-
-    {/* TEXT */}
-    <div>
+    {/* TEXT (FULL WIDTH BUT CONTROLLED PADDING) */}
+    <div className="w-full px-6 md:px-16 lg:px-24 py-10 md:py-0">
 
       <p className="text-[#C8A45A] text-[10px] tracking-[0.35em] mb-5">
         FOR SERIOUS INVESTORS
@@ -312,10 +270,9 @@ const prevSlide = () => {
 
   </div>
 </section>
-{/* ═════════ FEATURED INTERVIEW (PREMIUM) ═════════ */}
-<section className="relative py-16 md:py-24 px-5 overflow-hidden">
+<section className="relative py-20 md:py-32 overflow-hidden">
 
-  {/* 🔥 ANIMATED GOLD GLOW (REFINED) */}
+  {/* 🔥 ANIMATED GOLD GLOW */}
   <div className="absolute inset-0 -z-10 overflow-hidden">
 
     <motion.div
@@ -332,14 +289,20 @@ const prevSlide = () => {
 
   </div>
 
-  <div className="max-w-6xl mx-auto">
+  {/* FULL WIDTH CONTAINER */}
+  <div className="w-full">
 
     {/* CARD */}
-    <div className="relative bg-[#0f0f0f]/90 backdrop-blur-sm border border-[#1a1a1a] rounded-sm p-6 md:p-10 grid md:grid-cols-2 gap-10 md:gap-14 items-center hover:border-[#C8A45A]/30 transition duration-500">
+    <div className="relative w-full bg-[#0f0f0f]/90 backdrop-blur-sm 
+                    border-y border-[#1a1a1a] 
+                    px-5 md:px-16 lg:px-24 
+                    py-10 md:py-16 
+                    grid md:grid-cols-2 gap-10 md:gap-16 items-center
+                    hover:border-[#C8A45A]/30 transition duration-500">
 
       {/* LEFT: VIDEO */}
       <Reveal>
-        <div className="flex justify-center">
+        <div className="flex justify-center md:justify-start">
           <div className="relative w-full max-w-[420px] aspect-[4/5] bg-black overflow-hidden group">
 
             <video
@@ -348,7 +311,7 @@ const prevSlide = () => {
               className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
             />
 
-            {/* OVERLAY FOR DEPTH */}
+            {/* OVERLAY */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
           </div>
@@ -356,7 +319,7 @@ const prevSlide = () => {
       </Reveal>
 
       {/* RIGHT: TEXT */}
-      <div className="max-w-md">
+      <div className="w-full">
 
         <Reveal>
           <p className="text-[#C8A45A] text-[10px] tracking-[0.35em] mb-5">
@@ -365,7 +328,7 @@ const prevSlide = () => {
         </Reveal>
 
         <Reveal>
-          <h2 className="text-xl md:text-2xl mb-5 text-[#E8E2D9] leading-snug">
+          <h2 className="text-xl md:text-3xl lg:text-4xl mb-5 text-[#E8E2D9] leading-snug">
             How High-Net-Worth Investors Secure
             <span className="block italic text-[#C8A45A] mt-1">
               Private Luxury Opportunities
@@ -730,7 +693,7 @@ const prevSlide = () => {
   </div>
 </section>
 
- <section className="section-dark">
+ <section id="insights" className="section-dark">
       <div className="section-inner text-center">
 
         {/* LABEL */}
@@ -825,7 +788,7 @@ const prevSlide = () => {
     </section>
     
 {/* ═════════ WHY CLIENTS CHOOSE US (HERO BG) ═════════ */}
-<section
+<section id="why" data-section="why"
   className="relative py-24 md:py-36 px-5 overflow-hidden bg-cover bg-center"
   style={{
     backgroundImage: "url('/images/luxury-bg.jpg')",

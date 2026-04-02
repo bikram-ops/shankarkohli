@@ -9,13 +9,13 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [direction, setDirection] = useState<"left" | "right">("right");
+  const [direction, setDirection] = useState("right");
 
   const navItems = [
-    { label: "Investors", href: "#investors" },
-    { label: "Deals", href: "#deals" },
-    { label: "Advisory", href: "#advisory" },
-    { label: "Contact", href: "#final-cta" },
+    { label: "INVESTORS", href: "#investors" },
+    { label: "DEALS", href: "#deals" },
+    { label: "ADVISORY", href: "#advisory" },
+    { label: "WHY CHOOSE", href: "#why" },
   ];
 
   /* SCROLL DETECTION */
@@ -34,7 +34,7 @@ export default function Header() {
 
     const handleScroll = () => {
       let current = "";
-      let minTop = Number.POSITIVE_INFINITY;
+      let minTop = Infinity;
 
       sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
@@ -72,30 +72,18 @@ export default function Header() {
           : "bg-transparent py-3 md:py-5"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between">
 
-        {/* BRAND */}
+        {/* LOGO */}
         <div
-          className="leading-tight cursor-pointer select-none transition-opacity hover:opacity-80 flex-shrink min-w-0"
-          onClick={() => {
-            if (window.scrollY > 50) {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-          }}
+          className="cursor-pointer"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          {/* MOBILE */}
-          <h3 className="text-sm font-semibold tracking-[0.12em] uppercase sm:hidden truncate">
-            SK
-          </h3>
-
-          {/* DESKTOP */}
-          <h3 className="hidden sm:block text-sm sm:text-base md:text-lg font-semibold tracking-[0.08em] truncate">
-            Shankar Kohli
-          </h3>
-
-          <p className="hidden sm:block text-[8px] sm:text-[9px] md:text-xs text-gray-400 tracking-[0.12em] uppercase leading-tight truncate">
-            Luxury Branded Residences Advisor
-          </p>
+          <img
+            src="/logo.svg"
+            alt="Logo"
+            className="h-8 sm:h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105"
+          />
         </div>
 
         {/* DESKTOP NAV */}
@@ -123,7 +111,7 @@ export default function Header() {
                         scaleX: 0,
                         originX: direction === "right" ? 1 : 0,
                       }}
-                      transition={{ duration: 0.35, ease: "easeInOut" }}
+                      transition={{ duration: 0.35 }}
                       className="absolute left-0 -bottom-1 h-[2px] w-full bg-[#C8A45A]"
                     />
                   )}
@@ -134,37 +122,51 @@ export default function Header() {
         </nav>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
+        <div className="flex items-center gap-3">
 
-          {/* CTA */}
-         <motion.button
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.97 }}
-  onClick={() => {
-  document
-    .getElementById("final-cta")
-    ?.scrollIntoView({ behavior: "smooth" });
-}}
-  className="bg-[#C8A45A] text-black 
-             px-3 sm:px-4 md:px-6 
-             py-2 
-             text-[10px] sm:text-xs md:text-sm 
-             tracking-[0.12em] 
-             flex items-center gap-2 
-             whitespace-nowrap"
->
-  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-  <span>Book Consultation</span>
-</motion.button>
-          {/* MENU */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden flex flex-col gap-[4px] p-2 -mr-2"
+          {/* CTA (DESKTOP ONLY) */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() =>
+              document
+                .getElementById("final-cta")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="hidden md:flex bg-[#C8A45A] text-black 
+                       px-5 py-2 text-sm tracking-[0.12em] 
+                       items-center gap-2"
           >
-            <span className={`w-5 h-[2px] bg-white transition ${open ? "rotate-45 translate-y-[6px]" : ""}`} />
-            <span className={`w-5 h-[2px] bg-white transition ${open ? "opacity-0" : ""}`} />
-            <span className={`w-5 h-[2px] bg-white transition ${open ? "-rotate-45 -translate-y-[6px]" : ""}`} />
-          </button>
+            <Phone className="w-4 h-4" />
+            Book Consultation
+          </motion.button>
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+  onClick={() => setOpen(!open)}
+  className="md:hidden relative w-10 h-10 flex items-center justify-center group"
+>
+  {/* TOP LINE */}
+  <span
+    className={`absolute w-7 h-[2px] bg-white rounded-full transition-all duration-300 ${
+      open ? "rotate-45 translate-y-0" : "-translate-y-2 group-hover:-translate-y-2.5"
+    }`}
+  />
+
+  {/* MIDDLE LINE */}
+  <span
+    className={`absolute w-5 h-[2px] bg-[#C8A45A] rounded-full transition-all duration-300 ${
+      open ? "opacity-0 scale-0" : "group-hover:w-7"
+    }`}
+  />
+
+  {/* BOTTOM LINE */}
+  <span
+    className={`absolute w-7 h-[2px] bg-white rounded-full transition-all duration-300 ${
+      open ? "-rotate-45 translate-y-0" : "translate-y-2 group-hover:translate-y-2.5"
+    }`}
+  />
+</button>
 
         </div>
       </div>
@@ -173,9 +175,9 @@ export default function Header() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            exit={{ opacity: 0, y: -15 }}
             className="md:hidden bg-black px-6 py-8 border-t border-white/10"
           >
             <div className="flex flex-col gap-6 text-base">
