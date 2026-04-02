@@ -93,7 +93,7 @@ const prevSlide = () => {
     <main style={{ background: "#0A0A0A", color: "#E8E2D9" }}>
 
       <Header />
-<section className="relative w-full h-[100svh] md:h-[100dvh] overflow-hidden">
+<section className="relative w-full md:h-[100dvh] overflow-hidden">
 
   {/* 🎥 DESKTOP VIDEO */}
   <video
@@ -107,10 +107,10 @@ const prevSlide = () => {
     <source src="/videos/hero.mp4" type="video/mp4" />
   </video>
 
-  {/* 🌑 OVERLAY (only for desktop video) */}
+  {/* 🌑 OVERLAY */}
   <div className="hidden md:block absolute inset-0 bg-black/30" />
 
-  {/* 🔊 SOUND BUTTON (desktop only) */}
+  {/* 🔊 SOUND BUTTON */}
   <button
     onClick={toggleSound}
     className="hidden md:block absolute bottom-6 right-6 z-20 
@@ -121,82 +121,68 @@ const prevSlide = () => {
   </button>
 
   {/* 📱 MOBILE CONTENT */}
-  <div className="flex md:hidden h-130 items-center justify-center px-1">
+ <div className="md:hidden relative h-[100svh] w-full overflow-hidden">
 
-    <div className="w-full max-w-md text-left">
+  {/* FULL SCREEN IMAGE */}
+  <Image
+    src="/images/shankar-kohli.jpeg"
+    alt="Shankar Kohli"
+    fill
+    className="object-cover object-[50%_20%]"
+    priority
+  />
 
-      {/* IMAGE */}
-      <div className="relative mx-auto w-full max-w-[260px] aspect-[3/4] mb-6">
-        <Image
-          src="/images/shankar-kohli.jpeg"
-          alt="Shankar Kohli"
-          fill
-          className="object-cover object-[50%_20%]"
-          priority
-        />
-      </div>
+  {/* DARK OVERLAY */}
+  <div className="absolute inset-0 bg-black/20" />
 
-      {/* TEXT */}
-      <p className="text-[#C8A45A] text-[10px] tracking-[0.3em] mb-3">
-        FOUNDER OF MARK REAL ESSTATE
-      </p>
+  {/* GRADIENT (BOTTOM READABILITY) */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-      <h1 className="text-3xl font-serif mb-4">
-        Shankar Kohli
-      </h1>
+  {/* CONTENT OVERLAY */}
+  <div className="absolute inset-0 flex flex-col justify-end px-5 pb-6 pt-24">
 
-      <p className="text-gray-400 text-sm leading-relaxed mb-6">
-        Helping Gurugram’s most discerning investors acquire ultra-luxury residences with precision, discretion, and unmatched access.
-      </p>
+    <p className="text-[#C8A45A] text-[10px] tracking-[0.3em] mb-2">
+      FOUNDER OF MARK REAL ESTATE
+    </p>
 
-      {/* CTA */}
-      <div className="flex gap-3 justify-start">
+    <h1 className="text-3xl font-serif leading-tight mb-3">
+      Shankar Kohli
+    </h1>
 
-  <button
-    onClick={() =>
-      document
-        .getElementById("final-cta")
-        ?.scrollIntoView({ behavior: "smooth" })
-    }
-    className="
-      bg-[#C8A45A] text-black 
+    <p className="text-gray-300 text-sm leading-relaxed mb-5">
+      Helping Gurugram’s most discerning investors acquire ultra-luxury residences with precision, discretion, and unmatched access.
+    </p>
 
-      px-5 py-3 md:px-4 md:py-2 
-      text-sm md:text-xs 
+    {/* CTA */}
+    <div className="flex gap-3">
 
-      tracking-[0.08em] 
-      active:scale-95 
-      transition
-    "
-  >
-    Book Deep-Dive
-  </button>
+      <button
+        onClick={() =>
+          document
+            .getElementById("final-cta")
+            ?.scrollIntoView({ behavior: "smooth" })
+        }
+        className="flex-1 bg-[#C8A45A] text-black py-3 text-sm tracking-[0.08em]"
+      >
+        Book Deep-Dive
+      </button>
 
-  <button
-    onClick={() =>
-      document
-        .getElementById("deals")
-        ?.scrollIntoView({ behavior: "smooth" })
-    }
-    className="
-      border border-gray-700 text-[#C8A45A] 
-
-      px-5 py-3 md:px-4 md:py-2 
-      text-sm md:text-xs 
-
-      tracking-[0.08em] 
-      active:scale-95 
-      transition
-    "
-  >
-    View Projects
-  </button>
-
-</div>
+      <button
+        onClick={() =>
+          document
+            .getElementById("deals")
+            ?.scrollIntoView({ behavior: "smooth" })
+        }
+        className="flex-1 border border-white/30 text-white py-3 text-sm tracking-[0.08em]"
+      >
+        View Projects
+      </button>
 
     </div>
 
   </div>
+
+</div>
 
 </section>
 <section
