@@ -9,7 +9,7 @@ const NAV_LINKS = [
 ];
 
 const SOCIALS = [
-  { label: "IG", href: "https://www.instagram.com/shankarkohli1212/" },
+  { label: "IG", href: "https://www.instagram.com/shankarkohliofficial/" },
   { label: "FB", href: "https://www.facebook.com" },
   { label: "YT", href: "https://youtube.com" },
   { label: "LI", href: "https://www.linkedin.com/in/shankar-kohli-768b59141/" },
