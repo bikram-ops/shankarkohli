@@ -1,11 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
 
 const NAV_LINKS = [
-  { label: "Home",       href: "#home" },
+  { label: "Home", href: "#home" },
   { label: "Residences", href: "#residences" },
-  { label: "Amenities",  href: "#amenities" },
-  { label: "Gallery",    href: "#gallery" },
-  { label: "Location",   href: "#location" },
+  { label: "Amenities", href: "#amenities" },
+  { label: "Gallery", href: "#gallery" },
+  { label: "Location", href: "#location" },
 ];
 
 const SOCIALS = [
@@ -23,19 +26,30 @@ export default function Footer() {
         {/* Grid */}
         <div className="westin-foot-grid">
 
-          {/* Brand col */}
+          {/* Brand Column */}
           <div className="westin-foot-brand">
-            <span className="westin-brand-title">Westin</span>
-            <span className="westin-brand-sub" style={{ marginTop: 4, marginBottom: 20 }}>
-              Residences · Gurugram
-            </span>
+
+            {/* Logo */}
+            <Link href="#home" className="mb-5 block">
+              <Image
+                src="/images/westin/Westin-logo.webp"
+                alt="Westin Residences"
+                width={160}
+                height={60}
+                className="h-12 sm:h-14 md:h-16 w-auto object-contain"
+                priority
+              />
+            </Link>
+
+            {/* Address */}
             <address className="westin-foot-addr" style={{ fontStyle: "normal" }}>
               Managed by Marriott International<br />
               Sector 103, Dwarka Expressway<br />
               Gurugram, Haryana — 122 017
             </address>
-            {/* Social icons */}
-            <div className="westin-socials" aria-label="Social media links">
+
+            {/* Socials */}
+            <div className="westin-socials">
               {SOCIALS.map((s) => (
                 <a
                   key={s.label}
@@ -49,12 +63,13 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+
           </div>
 
-          {/* Navigation col */}
+          {/* Navigation */}
           <div>
             <p className="westin-foot-head">Navigation</p>
-            <nav aria-label="Footer navigation">
+            <nav>
               {NAV_LINKS.map((l) => (
                 <a key={l.label} href={l.href} className="westin-foot-link">
                   {l.label}
@@ -63,30 +78,36 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* Contact col */}
+          {/* Contact */}
           <div>
             <p className="westin-foot-head">Contact</p>
+
             <a href="tel:+919811422554" className="westin-foot-contact-link">
               +91 98114 22554
             </a>
+
             <a
               href="mailto:info@markrealesstate.com"
               className="westin-foot-contact-link"
             >
               info@markrealesstate.com
             </a>
-            <address style={{ fontStyle: "normal", marginTop: 16 }}>
-              <p className="westin-foot-head" style={{ marginBottom: 8 }}>Visit Us</p>
+
+            <div style={{ marginTop: 16 }}>
+              <p className="westin-foot-head" style={{ marginBottom: 8 }}>
+                Visit Us
+              </p>
               <span className="westin-foot-addr">
                 Sales Gallery, Sector 103<br />
                 Dwarka Expressway, Gurugram
               </span>
-            </address>
+            </div>
           </div>
 
-          {/* CTA col */}
+          {/* CTA */}
           <div className="westin-foot-cta-col">
             <p className="westin-foot-head">Get Started</p>
+
             <a
               href="#contact"
               className="westin-btn-gold"
@@ -94,6 +115,7 @@ export default function Footer() {
             >
               Book Site Visit
             </a>
+
             <a
               href="#residences"
               className="westin-btn-outline-light"
@@ -101,39 +123,26 @@ export default function Footer() {
             >
               View Floor Plans
             </a>
-            
-            
           </div>
+
         </div>
 
-        {/* Bottom row */}
-<div
-  className="westin-foot-bottom"
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: "10px",
-    fontSize: "11px",
-    opacity: 0.7,
-  }}
->
-  <p>
-    © {new Date().getFullYear()} Westin Residences Gurugram. All rights reserved.
-  </p>
+        {/* Bottom Row */}
+        <div className="westin-foot-bottom">
+          <p>
+            © {new Date().getFullYear()} Westin Residences Gurugram. All rights reserved.
+          </p>
 
-  <p>
-    Whiteland Corporation · A Marriott International Brand
-  </p>
+          <p>
+            Whiteland Corporation · A Marriott International Brand
+          </p>
 
-  {/* 🔥 PREMIUM CREDIT (SUBTLE) */}
-  <p style={{ opacity: 0.5 }}>
-    Marketing by Shankar Kohli · Founder, Mark Real Esstate
-  </p>
-</div>
+          <p className="westin-credit">
+            Marketing by Shankar Kohli · Founder, Mark Real Esstate
+          </p>
+        </div>
+
       </div>
-
-     
     </footer>
   );
 }
