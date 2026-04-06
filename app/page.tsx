@@ -416,8 +416,7 @@ const prevSlide = () => {
   </div>
 </section>
 {/* ═════════ GLOBAL → INDIA → LAMBORGHINI (ELITE VERSION) ═════════ */}
-{/* ═════════ CINEMATIC LAMBORGHINI SECTION ═════════ */}
-<section className="py-24 md:py-36 px-5 bg-[#0f0f0f] relative overflow-hidden">
+<section  id="new-launch" data-section="new-launch" className="py-24 md:py-36 px-5 bg-[#0f0f0f] relative overflow-hidden">
 
   {/* GLOW */}
   <div className="absolute inset-0 -z-10">

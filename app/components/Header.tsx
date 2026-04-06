@@ -13,7 +13,7 @@ export default function Header() {
 
   const navItems = [
     { label: "INVESTORS", href: "#investors" },
-    { label: "DEALS", href: "#deals" },
+    { label: "NEW LAUNCH", href: "#new-launch" },
     { label: "ADVISORY", href: "#advisory" },
     { label: "WHY CHOOSE", href: "#why" },
   ];
@@ -82,7 +82,7 @@ export default function Header() {
           <img
             src="/logo.svg"
             alt="Logo"
-            className="h-8 sm:h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            className="h-8 sm:h-10 md:h-10 w-auto object-contain transition-transform duration-300 hover:scale-105"
           />
         </div>
 

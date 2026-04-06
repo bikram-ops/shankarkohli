@@ -1,0 +1,1288 @@
+/* ═══════════════════════════════════════════════════
+   WESTIN RESIDENCES — Page Styles
+   Add this import to your app/globals.css:
+   @import './westin.css';
+   Or paste directly into globals.css
+═══════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  --w-gold:         #c4963a;
+  --w-gold-lt:      #e8c278;
+  --w-gold-dk:      #8a6520;
+  --w-cream:        #faf7f2;
+  --w-ink:          #1a1710;
+  --w-ink2:         #2c2920;
+  --w-bg-dark:      #131210;
+  --w-bg-dark2:     #1a1916;
+  --w-bg-dark3:     #202018;
+  --w-text-dhi:     rgba(250, 247, 242, 0.96);
+  --w-text-dmid:    rgba(250, 247, 242, 0.75);
+  --w-text-dlo:     rgba(250, 247, 242, 0.48);
+  --w-text-lhi:     #1a1710;
+  --w-text-lmid:    #4a4535;
+  --w-text-llo:     #8a8070;
+}
+
+/* ── Reset for westin page ── */
+.westin-page *,
+.westin-page *::before,
+.westin-page *::after {
+  box-sizing: border-box;
+}
+
+/* ═══════════════════════════════════════════════════
+   SHARED UTILITIES
+═══════════════════════════════════════════════════ */
+
+.westin-section-label {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--w-gold);
+  margin-bottom: 20px;
+}
+
+.westin-divider {
+  width: 52px;
+  height: 1px;
+  background: var(--w-gold);
+  margin: 16px 0;
+}
+.westin-divider-c {
+  margin: 16px auto;
+}
+
+/* Buttons */
+.westin-btn-gold {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: var(--w-gold);
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.25s;
+}
+.westin-btn-gold:hover {
+  background: var(--w-gold-dk);
+}
+
+.westin-btn-outline-dark {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--w-gold);
+  border: 1px solid var(--w-gold);
+  padding: 13px 31px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.westin-btn-outline-dark:hover {
+  background: var(--w-gold);
+  color: #fff;
+}
+
+.westin-btn-outline-light {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: transparent;
+  color: rgba(250, 247, 242, 0.85);
+  border: 1px solid rgba(250, 247, 242, 0.45);
+  padding: 13px 31px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.westin-btn-outline-light:hover {
+  background: rgba(250, 247, 242, 0.1);
+}
+
+/* Brand wordmark (shared by Nav & Footer) */
+.westin-brand {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+.westin-brand-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+}
+.westin-brand-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px;
+  font-weight: 300;
+  letter-spacing: 7px;
+  color: var(--w-gold);
+  text-transform: uppercase;
+  display: block;
+  margin-top: 3px;
+}
+
+/* Lux form input */
+.westin-lux-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(196, 150, 58, 0.3);
+  color: var(--w-text-dhi);
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 12px 0;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.westin-lux-input::placeholder {
+  color: rgba(250, 247, 242, 0.32);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.westin-lux-input:focus {
+  border-bottom-color: var(--w-gold);
+}
+.westin-lux-input option {
+  background: var(--w-bg-dark2);
+  color: var(--w-text-dhi);
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════════════ */
+
+.westin-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px clamp(20px, 5vw, 64px);
+  background: rgba(250, 247, 242, 0.0);
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+}
+.westin-nav.scrolled {
+  background: rgba(250, 247, 242, 0.97);
+  border-bottom-color: rgba(196, 150, 58, 0.15);
+  backdrop-filter: blur(14px);
+}
+.westin-nav .westin-brand-title {
+  color: var(--w-ink);
+}
+.westin-nav-links {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+.westin-nav-link {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--w-text-lmid);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.westin-nav-link:hover {
+  color: var(--w-gold);
+}
+.westin-nav-cta {
+  /* visible on desktop */
+}
+.westin-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.westin-hamburger span {
+  display: block;
+  width: 26px;
+  height: 1px;
+  background: var(--w-ink);
+  transition: background 0.2s;
+}
+
+/* ── Mobile Menu ── */
+.westin-mob-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(10, 10, 8, 0.98);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
+}
+.westin-mob-menu.open {
+  transform: translateX(0);
+}
+.westin-mob-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--w-cream);
+  font-size: 26px;
+}
+.westin-mob-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 8vw, 42px);
+  font-weight: 300;
+  color: var(--w-cream);
+  text-decoration: none;
+  letter-spacing: 3px;
+  transition: color 0.2s;
+}
+.westin-mob-link:hover {
+  color: var(--w-gold);
+}
+/* ═══════════════════════════════════════════════════
+HERO — FIXED (CINEMATIC DARK VIDEO)
+═══════════════════════════════════════════════════ */
+.westin-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: #000;
+  overflow: hidden;
+}
+
+/* 🎬 Video */
+.westin-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(1.1) contrast(1) saturate(1.3);
+}
+
+/* 🔥 Cinematic Overlay (FIXED for readability) */
+.westin-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(10, 9, 8, 0.75) 35%,
+    rgba(10, 9, 8, 0.65) 55%,
+    rgba(10, 9, 8, 0.85) 100%
+  );
+  z-index: 2;
+}
+
+/* ✨ Vignette (premium depth) */
+.westin-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ✨ Subtle grid (reduced) */
+.westin-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(196, 150, 58, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 150, 58, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 1;
+  opacity: 0.15;
+}
+
+/* Decorative rings */
+.westin-hero-ring,
+.westin-hero-ring2 {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.2;
+}
+
+.westin-hero-ring {
+  top: 8%;
+  right: -8%;
+  width: clamp(280px, 50vw, 560px);
+  height: clamp(280px, 50vw, 560px);
+  border: 1px solid rgba(196, 150, 58, 0.12);
+}
+
+.westin-hero-ring2 {
+  top: 20%;
+  right: 2%;
+  width: clamp(180px, 32vw, 340px);
+  height: clamp(180px, 32vw, 340px);
+  border: 1px solid rgba(196, 150, 58, 0.06);
+}
+
+/* Accent line */
+.westin-hero-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--w-gold), transparent);
+  z-index: 3;
+}
+
+/* 🧠 Content */
+.westin-hero-content {
+  position: relative;
+  z-index: 3;
+  padding: 0 clamp(20px, 6vw, 80px) clamp(48px, 6vw, 80px);
+  max-width: 720px;
+}
+
+/* ✨ Local contrast glow (GAME CHANGER) */
+.westin-hero-content::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(
+    circle at 30% 40%,
+    rgba(0, 0, 0, 0.55),
+    transparent 70%
+  );
+  z-index: -1;
+}
+
+/* ✨ Headline */
+.westin-hero-h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(56px, 9vw, 120px);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -1px;
+  color: #fff;
+  margin-bottom: 28px;
+
+  text-shadow:
+    0 4px 30px rgba(0,0,0,0.9),
+    0 2px 10px rgba(0,0,0,0.6);
+}
+
+.westin-hero-h1 em {
+  color: var(--w-gold);
+  font-style: italic;
+}
+
+/* ✨ Paragraph */
+.westin-hero-p {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: rgba(255,255,255,0.9);
+  max-width: 440px;
+  line-height: 1.95;
+  margin-bottom: 40px;
+
+  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+}
+
+/* Buttons */
+.westin-hero-btns {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* 📊 Stats bar */
+.westin-stats-bar {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(196, 150, 58, 0.2);
+  background: rgba(10, 9, 8, 0.9);
+  backdrop-filter: blur(6px);
+}
+
+.westin-stat-item {
+  padding: clamp(14px, 2.5vw, 24px) clamp(16px, 3vw, 36px);
+  border-right: 1px solid rgba(196, 150, 58, 0.1);
+}
+
+.westin-stat-item:last-child {
+  border-right: none;
+}
+
+.westin-stat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 400;
+  color: var(--w-gold);
+  line-height: 1.1;
+}
+
+.westin-stat-lbl {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+@keyframes westinCardFade {
+  from {
+    opacity: 0;
+    transform: translateY(-40%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@keyframes westinCardFloat {
+  0%   { transform: translateY(-50%) translateY(0px); }
+  50%  { transform: translateY(-50%) translateY(-10px); }
+  100% { transform: translateY(-50%) translateY(0px); }
+}
+
+.westin-floating-card {
+  position: absolute;
+  right: 6vw;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+
+  width: 300px;
+  padding: 28px;
+  border-radius: 20px;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+
+  animation: westinCardFade 1.2s ease forwards,
+             westinCardFloat 7s ease-in-out 1.2s infinite;
+}
+
+/* Text */
+.westin-card-label {
+  color: #d4af37;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.westin-card-price {
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 10px;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.westin-card-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+}
+
+.westin-card-btn {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 18px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #000;
+  background: #d4af37;
+  border-radius: 6px;
+  text-decoration: none;
+  box-shadow: 0 0 20px rgba(212,175,55,0.3);
+}
+
+@media (max-width: 768px) {
+  .westin-floating-card {
+    display: none;
+  }
+}
+/* ═══════════════════════════════════════════════════
+   INTRO / ABOUT  (light)
+═══════════════════════════════════════════════════ */
+
+.westin-intro {
+  padding: clamp(60px, 9vw, 110px) clamp(20px, 6vw, 80px);
+  background: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 7vw, 90px);
+  align-items: center;
+  border-top: 1px solid rgba(196, 150, 58, 0.08);
+}
+.westin-intro-img-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid rgba(196, 150, 58, 0.15);
+}
+.westin-intro-img-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 24px 22px;
+  background: linear-gradient(transparent, rgba(26, 23, 16, 0.75));
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(196, 150, 58, 0.9);
+  letter-spacing: 2px;
+}
+.westin-price-badge {
+  position: absolute;
+  bottom: -18px;
+  right: -18px;
+  background: var(--w-gold);
+  padding: 20px 24px;
+  min-width: 140px;
+  z-index: 2;
+}
+.westin-price-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1;
+}
+.westin-price-lbl {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.westin-intro h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(30px, 3.8vw, 50px);
+  font-weight: 300;
+  line-height: 1.06;
+  color: var(--w-ink);
+  margin-bottom: 14px;
+}
+.westin-intro h2 em {
+  color: var(--w-gold);
+}
+.westin-intro p {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: clamp(13px, 1.3vw, 15px);
+  color: var(--w-text-lmid);
+  line-height: 1.95;
+  margin-bottom: 14px;
+}
+.westin-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 36px;
+  margin-bottom: 40px;
+}
+.westin-spec-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--w-gold);
+  line-height: 1;
+}
+.westin-spec-lbl {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--w-text-llo);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════
+   HIGHLIGHTS / WHY WESTIN  (dark)
+═══════════════════════════════════════════════════ */
+
+.westin-why {
+  background: var(--w-bg-dark);
+  padding: clamp(60px, 8vw, 96px) clamp(20px, 6vw, 80px) clamp(24px, 4vw, 48px);
+  border-top: 1px solid rgba(196, 150, 58, 0.08);
+}
+.westin-why-head {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.westin-why-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 50px);
+  font-weight: 300;
+  color: var(--w-text-dhi);
+}
+.westin-why-head h2 em {
+  color: var(--w-gold);
+}
+.westin-hl-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 1100px;
+  margin: 0 auto 64px;
+}
+.westin-hl-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid rgba(196, 150, 58, 0.1);
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.westin-hl-card:hover {
+  border-color: rgba(196, 150, 58, 0.28);
+}
+.westin-hl-img {
+  position: relative;
+  min-height: 270px;
+}
+.westin-hl-body {
+  padding: clamp(32px, 5vw, 60px) clamp(24px, 5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--w-bg-dark2);
+}
+.westin-hl-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px;
+  font-weight: 300;
+  color: rgba(196, 150, 58, 0.12);
+  line-height: 1;
+  display: block;
+  margin-bottom: 10px;
+}
+.westin-hl-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 2.2vw, 28px);
+  font-weight: 400;
+  color: var(--w-text-dhi);
+  margin-bottom: 12px;
+}
+.westin-hl-body p {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: clamp(13px, 1.2vw, 14px);
+  color: var(--w-text-dmid);
+  line-height: 1.9;
+}
+
+/* ═══════════════════════════════════════════════════
+   AMENITIES  (dark)
+═══════════════════════════════════════════════════ */
+
+.westin-amenities {
+  padding: clamp(60px, 8vw, 96px) clamp(20px, 6vw, 80px);
+  background: var(--w-bg-dark2);
+  border-top: 1px solid rgba(196, 150, 58, 0.08);
+}
+.westin-sec-center {
+  text-align: center;
+  margin-bottom: 52px;
+}
+.westin-sec-center h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 50px);
+  font-weight: 300;
+  color: var(--w-text-dhi);
+  margin-bottom: 10px;
+}
+.westin-sec-center h2 em {
+  color: var(--w-gold);
+}
+.westin-sec-center p {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 14px;
+  color: var(--w-text-dmid);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.85;
+}
+.westin-am-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(196, 150, 58, 0.06);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.westin-am-card {
+  background: var(--w-bg-dark);
+  padding: 30px 22px;
+  border: 1px solid rgba(196, 150, 58, 0.1);
+  transition: border-color 0.3s, transform 0.3s;
+  cursor: default;
+}
+.westin-am-card:hover {
+  border-color: rgba(196, 150, 58, 0.35);
+  transform: translateY(-3px);
+}
+.westin-am-icon {
+  font-size: 22px;
+  display: block;
+  margin-bottom: 12px;
+}
+.westin-am-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: var(--w-text-dhi);
+  margin-bottom: 8px;
+}
+.westin-am-desc {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 12px;
+  color: var(--w-text-dmid);
+  line-height: 1.75;
+}
+
+/* ═══════════════════════════════════════════════════
+   GALLERY  (dark)
+═══════════════════════════════════════════════════ */
+
+.westin-gallery {
+  padding: clamp(60px, 8vw, 96px) clamp(20px, 6vw, 80px);
+  background: var(--w-bg-dark);
+  border-top: 1px solid rgba(196, 150, 58, 0.08);
+}
+.westin-gal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.westin-gal-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.westin-gal-item img {
+  transition: transform 0.6s ease !important;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.westin-gal-item:hover img {
+  transform: scale(1.06) !important;
+}
+.westin-gal-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 18px;
+  background: linear-gradient(transparent, rgba(10, 9, 8, 0.8));
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 242, 0.85);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.westin-gal-item:hover .westin-gal-label {
+  opacity: 1;
+}
+/* Lightbox */
+.westin-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(10, 9, 8, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.westin-lightbox-inner {
+  position: relative;
+  max-width: 1100px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+.westin-lb-btn {
+  position: absolute;
+  background: rgba(10, 9, 8, 0.7);
+  border: 1px solid rgba(196, 150, 58, 0.25);
+  color: var(--w-cream);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+.westin-lb-btn:hover {
+  border-color: var(--w-gold);
+}
+
+/* ═══════════════════════════════════════════════════
+   VIDEO STRIP  (dark)
+═══════════════════════════════════════════════════ */
+
+.westin-strip {
+  position: relative;
+  height: clamp(300px, 48vw, 520px);
+  overflow: hidden;
+  border-top: 1px solid rgba(196, 150, 58, 0.08);
+}
+.westin-strip-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1400&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.28;
+}
+.westin-strip-ov {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 12, 10, 0.65);
+}
+.westin-strip-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 clamp(20px, 6vw, 80px);
+}
+.westin-strip-content h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4.5vw, 58px);
+  font-weight: 300;
+  color: var(--w-text-dhi);
+  max-width: 680px;
+  line-height: 1.1;
+  margin-bottom: 28px;
+}
+.westin-strip-content h2 em {
+  color: var(--w-gold);
+}
+
+/* ═══════════════════════════════════════════════════
+   LOCATION  (light)
+═══════════════════════════════════════════════════ */
+
+.westin-location {
+  padding: clamp(60px, 8vw, 96px) clamp(20px, 6vw, 80px);
+  background: var(--w-cream);
+  border-top: 4px solid var(--w-gold);
+}
+.westin-loc-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 7vw, 80px);
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.westin-location h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 300;
+  line-height: 1.06;
+  color: var(--w-ink);
+  margin-bottom: 14px;
+}
+.westin-location h2 em {
+  color: var(--w-gold);
+}
+.westin-location > .westin-loc-inner > div > p {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 14px;
+  color: var(--w-text-lmid);
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+.westin-conn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(196, 150, 58, 0.12);
+}
+.westin-conn-lbl {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  color: var(--w-text-lmid);
+}
+.westin-conn-dist {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--w-gold);
+}
+.westin-map-box {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(196, 150, 58, 0.18);
+}
+.westin-map-ov {
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 247, 242, 0.42);
+}
+.westin-map-pin {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.westin-map-pin-dot {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--w-gold);
+  display: flex;
+  align-items: left;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 24px rgba(196, 150, 58, 0.45);
+}
+.westin-map-pin p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: var(--w-ink);
+  font-style: italic;
+}
+.westin-map-pin span {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: var(--w-gold);
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTACT  (dark)
+═══════════════════════════════════════════════════ */
+
+.westin-contact {
+  padding: clamp(70px, 9vw, 110px) clamp(20px, 6vw, 80px);
+  background: var(--w-bg-dark3);
+  border-top: 1px solid rgba(196, 150, 58, 0.08);
+  text-align: center;
+}
+.westin-contact h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(34px, 5vw, 62px);
+  font-weight: 300;
+  color: var(--w-text-dhi);
+  line-height: 1.06;
+  margin-bottom: 10px;
+}
+.westin-contact h2 em {
+  color: var(--w-gold);
+}
+.westin-contact-desc {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 14px;
+  color: var(--w-text-dmid);
+  line-height: 1.85;
+  max-width: 520px;
+  margin: 0 auto 48px;
+}
+.westin-form-box {
+  background: rgba(196, 150, 58, 0.04);
+  border: 1px solid rgba(196, 150, 58, 0.16);
+  padding: clamp(28px, 5vw, 52px) clamp(20px, 5vw, 52px);
+  max-width: 700px;
+  margin: 0 auto;
+}
+.westin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 40px;
+}
+.westin-field {
+  margin-bottom: 28px;
+  text-align: left;
+}
+.westin-phone-note {
+  margin-top: 24px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 11px;
+  color: var(--w-text-dlo);
+  letter-spacing: 2px;
+}
+.westin-phone-note a {
+  color: var(--w-gold);
+  text-decoration: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   FOOTER  (dark)
+═══════════════════════════════════════════════════ */
+
+.westin-footer {
+  background: #0c0b09;
+  border-top: 1px solid rgba(196, 150, 58, 0.1);
+  padding: clamp(44px, 6vw, 68px) clamp(20px, 6vw, 80px) clamp(24px, 4vw, 36px);
+  position: relative;
+}
+.westin-footer .westin-brand-title {
+  color: var(--w-cream);
+}
+.westin-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.westin-foot-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: clamp(28px, 4vw, 52px);
+  margin-bottom: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(196, 150, 58, 0.08);
+}
+.westin-foot-brand {
+  display: flex;
+  flex-direction: column;
+}
+.westin-foot-head {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 5px;
+  color: var(--w-gold);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.westin-foot-addr {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 12px;
+  color: var(--w-text-dlo);
+  line-height: 1.9;
+}
+.westin-foot-link {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--w-text-dmid);
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+.westin-foot-link:hover {
+  color: var(--w-gold);
+}
+.westin-foot-contact-link {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 12px;
+  color: var(--w-text-dmid);
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+.westin-foot-contact-link:hover {
+  color: var(--w-gold);
+}
+.westin-foot-cta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.westin-foot-rera {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 10px;
+  color: var(--w-text-dlo);
+  line-height: 1.7;
+  margin-top: 20px;
+}
+.westin-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.westin-social-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(196, 150, 58, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--w-text-dmid);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.westin-social-btn:hover {
+  border-color: var(--w-gold);
+  color: var(--w-gold);
+}
+.westin-foot-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 11px;
+  color: var(--w-text-dlo);
+  letter-spacing: 1px;
+}
+
+/* WhatsApp FAB */
+.westin-whatsapp-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 300;
+  background: #25d366;
+  color: #fff;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  transition: transform 0.3s;
+}
+.westin-whatsapp-btn:hover {
+  transform: scale(1.08);
+}
+
+/* ═══════════════════════════════════════════════════
+   FADE-UP ANIMATION
+═══════════════════════════════════════════════════ */
+
+@keyframes westinFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.westin-fu    { animation: westinFadeUp 0.9s ease both; }
+.westin-d1    { animation-delay: 0.1s; }
+.westin-d2    { animation-delay: 0.3s; }
+.westin-d3    { animation-delay: 0.5s; }
+.westin-d4    { animation-delay: 0.7s; }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .westin-am-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .westin-hl-card { grid-template-columns: 1fr; }
+  .westin-hl-img  { min-height: 250px; aspect-ratio: 19 / 12; }
+  .westin-foot-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .westin-nav-links,
+  .westin-nav-cta  { display: none !important; }
+  .westin-hamburger { display: flex !important; }
+  .westin-intro    { grid-template-columns: 1fr; }
+  .westin-stats-bar { grid-template-columns: 1fr 1fr; }
+  .westin-am-grid  { grid-template-columns: 1fr 1fr; }
+  .westin-gal-grid { grid-template-columns: 1fr 1fr; }
+  .westin-loc-inner { grid-template-columns: 1fr; }
+  .westin-form-row  { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 540px) {
+  .westin-stats-bar { grid-template-columns: 1fr 1fr; }
+  .westin-am-grid   { grid-template-columns: 1fr; }
+  .westin-gal-grid  { grid-template-columns: 1fr; }
+  .westin-foot-grid { grid-template-columns: 1fr; }
+  .westin-hero-h1   { font-size: 52px; }
+}
+
+
+.westin-price-val {
+  color: #fff !important;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.westin-price-lbl {
+  color: rgba(255,255,255,0.7) !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+
