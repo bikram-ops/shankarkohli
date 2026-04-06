@@ -166,7 +166,7 @@ const [error, setError] = useState("");
       id="home"
       style={{
         position: "relative",
-        height: "100vh",
+        height: "100svh",
         overflow: "hidden",
       }}
     >
@@ -209,11 +209,11 @@ const [error, setError] = useState("");
           zIndex: 2,
           height: "100%",
           display: "flex",
-          alignItems: isMobile ? "flex-end" : "center",
+          alignItems: isMobile ? "center" : "center",
+paddingTop: isMobile ? "110px" : "0px",
+paddingBottom: isMobile ? "60px" : "0px",
 
-          // 🔥 FIX: HEADER OVERLAP
-          paddingTop: isMobile ? "100px" : "0px",
-          paddingBottom: isMobile ? "120px" : "0px",
+
         }}
       >
         <div
@@ -482,13 +482,8 @@ const [error, setError] = useState("");
         key={h.no}
         className="westin-hl-card"
         style={{
-          direction:
-            typeof window !== "undefined" && window.innerWidth < 768
-              ? "ltr" // 🔥 FIX: disable rtl on mobile
-              : i % 2 === 1
-              ? "rtl"
-              : "ltr",
-        }}
+  flexDirection: !isMobile && i % 2 === 1 ? "row-reverse" : "row",
+}}
       >
         {/* Image */}
         <div
@@ -497,7 +492,7 @@ const [error, setError] = useState("");
             direction: "ltr",
             width: "100%",
             minHeight:
-              typeof window !== "undefined" && window.innerWidth < 768
+              isMobile
                 ? "220px"
                 : undefined,
           }}
@@ -521,7 +516,7 @@ const [error, setError] = useState("");
           style={{
             direction: "ltr",
             padding:
-              typeof window !== "undefined" && window.innerWidth < 768
+              isMobile
                 ? "16px"
                 : undefined,
           }}

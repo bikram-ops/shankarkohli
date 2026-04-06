@@ -548,6 +548,81 @@ HERO — FIXED (CINEMATIC DARK VIDEO)
     display: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   HERO — FINAL MOBILE RESPONSIVE FIX
+═══════════════════════════════════════════════════ */
+
+/* 🔥 Prevent header overlap */
+.westin-hero {
+  padding-top: 80px; /* adjust based on navbar height */
+}
+
+/* Ensure safe layout */
+.westin-hero-content {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+
+  /* 🔥 Better spacing */
+  .westin-hero {
+    padding-top: 90px;
+    justify-content: flex-end;
+  }
+
+  .westin-hero-content {
+    padding: 0 20px 100px;
+    max-width: 100%;
+  }
+
+  /* 🔥 Typography fix */
+  .westin-hero-h1 {
+    font-size: 42px !important;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .westin-hero-p {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 26px;
+  }
+
+  /* 🔥 Buttons spacing */
+  .westin-hero-btns {
+    gap: 10px;
+  }
+
+  /* 🔥 Stats fix */
+  .westin-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .westin-stat-item {
+    padding: 14px 12px;
+  }
+
+}
+
+/* ================= SMALL MOBILE ================= */
+@media (max-width: 540px) {
+
+  .westin-hero {
+    padding-top: 95px;
+  }
+
+  .westin-hero-h1 {
+    font-size: 36px !important;
+  }
+
+  .westin-hero-p {
+    font-size: 13px;
+  }
+
+}
 /* ═══════════════════════════════════════════════════
    INTRO / ABOUT  (light)
 ═══════════════════════════════════════════════════ */
@@ -718,27 +793,52 @@ HERO — FIXED (CINEMATIC DARK VIDEO)
   color: var(--w-text-dmid);
   line-height: 1.9;
 }
+
+/* 🔥 FINAL FIX — DO NOT SKIP */
 @media (max-width: 768px) {
 
+  .westin-hl-grid {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
   .westin-hl-card {
-    grid-template-columns: 1fr !important; /* 🔥 STACK */
-    overflow: visible !important;          /* 🔥 STOP CUTTING */
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    overflow: visible !important;
   }
 
   .westin-hl-img {
-    min-height: 220px !important;
+    width: 100% !important;
+    height: 220px !important;
+    min-height: unset !important;
   }
 
   .westin-hl-body {
-    padding: 20px !important;              /* 🔥 BETTER SPACING */
+    width: 100% !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
   }
 
   .westin-hl-body p {
+    width: 100% !important;
+    max-width: 100% !important;
     white-space: normal !important;
-    word-break: break-word;
-    overflow-wrap: break-word;
+    overflow: visible !important;
+    word-break: break-word !important;
   }
 
+  /* 🔥 ABSOLUTE FINAL LOCK FIX */
+@media (max-width: 900px) {
+
+  .westin-hl-card {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+
+}
 }
 /* ═══════════════════════════════════════════════════
    AMENITIES  (dark)

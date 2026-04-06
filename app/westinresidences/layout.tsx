@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "Westin Residences",
     images: [
       {
-        url: "/og-image.jpg", // add your OG image in public folder
+        url: "images/westin/favicon.ico", // add your OG image in public folder
         width: 1200,
         height: 630,
         alt: "Westin Residences",
