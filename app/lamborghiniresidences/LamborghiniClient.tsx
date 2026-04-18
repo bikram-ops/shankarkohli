@@ -1051,7 +1051,7 @@ useEffect(() => {
         width={180}
         height={50}
         style={{
-          height: "40px",
+          height: "50px",
           width: "auto",
         }}
         priority
@@ -1120,7 +1120,7 @@ useEffect(() => {
     flexShrink: 0,          // ✅ PREVENT SQUEEZE
   }}
 >
-  {isMobile ? "CALL" : "+91 98114 22554"}
+  {isMobile ? "CALL NOW" : "+91 98114 22554"}
 </a>
 </nav>
 {/* HERO */}
