@@ -1,0 +1,312 @@
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(180,0,0,0.4),0 0 0 0 rgba(180,0,0,0.2)} 50%{box-shadow:0 0 0 24px rgba(180,0,0,0.1),0 0 0 48px rgba(180,0,0,0.05)}}
+        @keyframes bounceY {0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)}}
+        @keyframes fadeIn {from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
+        .map-pulse { animation: pulse 2.5s ease-in-out infinite; }
+        .scroll-bounce { animation: bounceY 1.8s ease-in-out infinite; }
+        .hero-content-anim { animation: fadeIn 1s ease 0.2s both; }
+        .btn-hover:hover { opacity: 0.85; transform: scale(1.02); }
+        .apt-card-hover:hover { background: #180a0a !important; }
+        .amenity-hover:hover { border-color: rgba(180,0,0,0.5) !important; }
+        input::placeholder, textarea::placeholder { color: rgba(168,152,128,0.4); }
+        input:focus, select:focus, textarea:focus { border-color: rgba(180,0,0,0.6) !important; }
+        @media(max-width:768px){
+          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .apts-grid, .amenities-grid, .reasons-grid { grid-template-columns: 1fr !important; }
+          .location-section { grid-template-columns: 1fr !important; }
+          .collab-inner { grid-template-columns: 1fr !important; }
+          .footer-top { grid-template-columns: 1fr !important; }
+          .nav-links { display: none !important; }
+          .form-grid { grid-template-columns: 1fr !important; }
+          .collab-divider { display: none !important; }
+        }
+
+        .amenity-hover {
+  position: relative;
+}
+
+.amenity-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.4),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.amenity-hover:hover::before {
+  opacity: 1;
+}
+
+.amenity-hover:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.18);
+  border-color: rgba(180,0,0,0.5);
+}
+
+.amenity-hover:hover svg {
+  transform: scale(1.15);
+  stroke: #7a0000;
+  transition: all 0.3s ease;
+}
+
+/* ICON FLOAT (subtle luxury motion) */
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ICON GLOW BREATH */
+@keyframes iconPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+
+/* STAGGER (IMPORTANT → organic feel) */
+.locationItem:nth-child(1) svg { animation-delay: 0s; }
+.locationItem:nth-child(2) svg { animation-delay: 0.4s; }
+.locationItem:nth-child(3) svg { animation-delay: 0.8s; }
+.locationItem:nth-child(4) svg { animation-delay: 1.2s; }
+.locationItem:nth-child(5) svg { animation-delay: 1.6s; }
+.locationItem:nth-child(6) svg { animation-delay: 2s; }
+
+/* HOVER INTERACTION */
+.locationItem:hover svg {
+  animation: none;
+  transform: scale(1.15);
+  stroke: #7a0000;
+}
+
+/* ITEM HOVER */
+.locationItem {
+  transition: all 0.3s ease;
+}
+
+.locationItem:hover {
+  background: rgba(180,0,0,0.08);
+  transform: translateX(6px);
+}
+
+@keyframes mapPulseLuxury {
+  0% {
+    box-shadow: 0 0 0 0 rgba(180,0,0,0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 30px rgba(180,0,0,0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(180,0,0,0);
+  }
+}
+
+input::placeholder {
+  color: rgba(245,240,232,0.4);
+}
+
+input:focus {
+  border-bottom: 1px solid #b40000;
+  box-shadow: 0 8px 25px rgba(180,0,0,0.2);
+}
+
+
+    .apts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 50px;
+    }
+
+    .apt-card {
+      position: relative;
+      height: 460px;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    /* 🔥 BACKGROUND LAYER */
+    .apt-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+
+    /* 🔥 LIGHTER OVERLAY */
+    .apt-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10,10,10,0.82),
+        rgba(10,10,10,0.2)
+      );
+      z-index: 1;
+    }
+
+    .apt-content {
+      position: relative;
+      z-index: 2;
+      padding: 26px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .apt-type {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      color: #c8b89a;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .apt-size {
+      font-size: 36px;
+      font-weight: 300;
+      color: #f5f0e8;
+    }
+
+    .apt-unit {
+      font-size: 14px;
+      color: #a89880;
+    }
+
+    .apt-price {
+      font-size: 16px;
+      color: rgba(245,240,232,0.9);
+      margin-top: 10px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .apt-desc {
+      font-size: 12px;
+      color: #a89880;
+      margin-top: 6px;
+      line-height: 1.5;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .apt-btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid rgba(200,184,154,0.5);
+      backdrop-filter: blur(6px);
+      color: #f5f0e8;
+      border-radius: 30px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .apt-btn:hover {
+      background: rgba(200,184,154,0.12);
+      border-color: #c8b89a;
+      transform: translateY(-2px);
+    }
+
+    /* 🔥 HIGHLIGHT (SUBTLE PREMIUM) */
+    .apt-card.highlight {
+      border: 1px solid rgba(200,184,154,0.25);
+      transform: scale(1.03);
+    }
+
+    .apt-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      background: #b40000;
+      padding: 6px 10px;
+      border-radius: 20px;
+      z-index: 3;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      .apts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .apts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .apt-card {
+        height: 360px;
+      }
+
+      .apt-card.highlight {
+        transform: none;
+      }
+    }
+ footer a:hover {
+      color: #b40000;
+      border-bottom: 1px solid #b40000;
+    }
+
+     @keyframes slowZoom {
+      from { transform: scale(1.05); }
+      to { transform: scale(1.15); }
+    }
+
+    .reasonCard:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255,255,255,0.2);
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    }
+
+    .invest-cta:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: #fff;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      #invest div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .location-section {
+        grid-template-columns: 1fr !important;
+        gap: 60px !important;
+      }
+    }
+
+     .icon-wrapper {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(214,208,196,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+    }
+
+    /* hover only animation */
+    .amenity-clean:hover .icon-wrapper {
+      background: rgba(214,208,196,0.15);
+      box-shadow: 0 0 18px rgba(180,0,0,0.12);
+    }
+
+    .amenity-clean:hover svg {
+      transform: scale(1.08) translateY(-4px);
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 6px rgba(180,0,0,0.3));
+    }

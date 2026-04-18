@@ -1,7 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import React from "react";
 import {
   Landmark,
   Building2,
@@ -9,13 +11,8 @@ import {
   Dumbbell,
   Trees,
   ConciergeBell,
-  Zap,
-  Plane,
-  School,
-  ShoppingBag,
-  Route,
+ 
 } from "lucide-react";
-
 
 const container = {
   hidden: {},
@@ -280,7 +277,7 @@ heroFormNote: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "20px 40px",
+    padding: "30px 40px",
     background: "linear-gradient(180deg, rgba(10,10,10,0.95) 0%, transparent 100%)",
     
     
@@ -312,13 +309,13 @@ heroFormNote: {
     padding: 0,
   },
   navLink: {
-    fontSize: "10px",
+    fontSize: "12px",
     letterSpacing: "0.3em",
-    textTransform: "uppercase" as const,
-    color: "#a89880",
+    
+    color: "#f9f9f9",
     cursor: "pointer",
     fontFamily: "'Montserrat', sans-serif",
-    fontWeight: 500,
+    fontWeight: 600,
     transition: "color 0.2s",
   },
   navCta: {
@@ -343,7 +340,7 @@ heroFormNote: {
   sectionLabel: {
     fontSize: "10px",
     letterSpacing: "0.5em",
-    color: "#b40000",
+    color: " #eceaea",
     textTransform: "uppercase" as const,
     fontFamily: "'Montserrat', sans-serif",
     marginBottom: "16px",
@@ -903,12 +900,12 @@ const amenities = [
   {
     icon: <Landmark size={26} strokeWidth={1.5} color="#b40000" />,
     title: "Grand Lamborghini Lobby",
-    desc: "An entrance that commands respect — soaring Italian marble, Tonino Lamborghini design.",
+    desc: "An entrance of Italian marble. Lamborghini design.",
   },
   {
     icon: <Building2 size={26} strokeWidth={1.5} color="#b40000" />,
     title: "Ultra-Luxury Clubhouse",
-    desc: "A members-only retreat with curated spaces for socialising, private events, and refined leisure.",
+    desc: "A members-only retreat for refined living.",
   },
   {
     icon: <Waves size={26} strokeWidth={1.5} color="#b40000" />,
@@ -932,32 +929,13 @@ const amenities = [
   },
 ];
 const locationPoints = [
-  {
-    icon: <Zap size={18} strokeWidth={1.5} color="#b40000" />,
-    text: "Golf Course Extension Road — 5 min",
-  },
-  {
-    icon: <Plane size={18} strokeWidth={1.5} color="#b40000" />,
-    text: "IGI Airport — 35 min via NH-48",
-  },
-  {
-    icon: <Building2 size={18} strokeWidth={1.5} color="#b40000" />,
-    text: "Cyber Hub / Cyber City — 20 min",
-  },
-  {
-    icon: <School size={18} strokeWidth={1.5} color="#b40000" />,
-    text: "Top Schools & Hospitals — 10 min",
-  },
-  {
-    icon: <ShoppingBag size={18} strokeWidth={1.5} color="#b40000" />,
-    text: "Premium Malls & Dining — 5 min",
-  },
-  {
-    icon: <Route size={18} strokeWidth={1.5} color="#b40000" />,
-    text: "Sohna Road & NH-48 — Direct Access",
-  },
+  { text: "Golf Course Extension Road — 5 min" },
+  { text: "IGI Airport — 35 min via NH-48" },
+  { text: "Cyber Hub / Cyber City — 20 min" },
+  { text: "Top Schools & Hospitals — 10 min" },
+  { text: "Premium Malls & Dining — 5 min" },
+  { text: "Sohna Road & NH-48 — Direct Access" },
 ];
-
 const reasons = [
   { title: "The Lamborghini Name", body: "Globally iconic brand driving long-term value." },
   { title: "SPR – Gurgaon's Gold Corridor", body: "High-growth corridor with strong appreciation potential." },
@@ -970,7 +948,11 @@ export default function LamborghiniResidences() {
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", config: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+const { scrollY } = useScroll();
 
+const [loading, setLoading] = useState(false);
+  const y = useTransform(scrollY, [0, 500], [0, 120]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
   useEffect(() => {
     // Load fonts
     const link = document.createElement("link");
@@ -983,18 +965,1722 @@ export default function LamborghiniResidences() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSubmit = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (formData.name && formData.phone) setSubmitted(true);
+
+  const handleSubmit = async (e: React.MouseEvent) => {
+  e.preventDefault();
+
+  if (!formData.name || !formData.phone) {
+    alert("Please fill required fields");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch("/api/lambo", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: formData.name,
+    phone: formData.phone,
+    email: formData.email || "",
+    configuration: formData.config || "",
+    message: formData.message || "", 
+  }),
+});
+
+    console.log("STATUS:", res.status);
+
+    const data = await res.text();
+    console.log("RESPONSE:", data);
+
+    if (res.ok) {
+      setSubmitted(true);
+    } else {
+      alert("API error: " + res.status);
+    }
+  } catch (err) {
+    console.error("FULL ERROR:", err);
+    alert("Network error — check console");
+  } finally {
+    setLoading(false);
+  }
+};
+const [isMobile, setIsMobile] = useState(false);
+const [hovered, setHovered] = useState<string | null>(null);
+// Detect screen size
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
   };
-  
+
+  handleResize();
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   return (
     
     <div style={styles.root}>
-      {/* FONT STYLE */}
-      <style>{`
-        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(180,0,0,0.4),0 0 0 0 rgba(180,0,0,0.2)} 50%{box-shadow:0 0 0 24px rgba(180,0,0,0.1),0 0 0 48px rgba(180,0,0,0.05)}}
+  
+
+     {/* NAV */}
+<nav
+  style={{
+    ...styles.nav,
+    background: scrolled
+      ? "rgba(10,10,10,0.98)"
+      : "linear-gradient(180deg, rgba(10,10,10,0.95) 0%, transparent 100%)",
+  }}
+>
+  {/* LOGO */}
+  <div
+    style={{ cursor: "pointer" }}
+    onClick={() =>
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      })
+    }
+  >
+    <div style={styles.navLogo}>
+      <Image
+        src="/images/lambo/logo.png"
+        alt="Lamborghini"
+        width={180}
+        height={50}
+        style={{
+          height: "40px",
+          width: "auto",
+        }}
+        priority
+      />
+    </div>
+  </div>
+
+  {/* NAV LINKS (HIDE ON MOBILE) */}
+  {!isMobile && (
+    <ul
+      style={{
+        ...styles.navLinks,
+        listStyle: "none",
+      }}
+    >
+      {[
+        { label: "Overview", id: "overview" },
+        { label: "Amenities", id: "amenities" },
+        { label: "Location", id: "location" },
+      ].map((l) => (
+        <li key={l.label}>
+  <a
+    href={`#${l.id}`}
+    onMouseEnter={() => setHovered(l.label)}
+    onMouseLeave={() => setHovered(null)}
+    style={{
+      ...styles.navLink,
+      textDecoration: "none",
+      position: "relative",
+      paddingBottom: "4px",
+    }}
+  >
+    {l.label}
+
+    {/* UNDERLINE */}
+    <span
+      style={{
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        height: "1.5px",
+        width: hovered === l.label ? "100%" : "0%",
+        background: "#fff",
+        transition: "width 0.3s ease",
+      }}
+    />
+  </a>
+</li>
+      ))}
+    </ul>
+  )}
+
+  {/* CTA BUTTON (ALWAYS VISIBLE — MOBILE PRIORITY) */}
+  <a
+    href="tel:+919811422554"
+    style={{
+      ...styles.navCta,
+      textDecoration: "none",
+      padding: isMobile ? "6px 12px" : "8px 16px",
+      fontSize: isMobile ? "12px" : "14px",
+      borderRadius: "4px",
+    }}
+  >
+    {isMobile ? "+91 98114 22554" : "+91 98114 22554"}
+  </a>
+</nav>
+{/* HERO */}
+<section
+  style={{
+    position: "relative",
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  }}
+>
+  {/* VIDEO */}
+  <video
+    autoPlay
+    loop
+    muted
+    playsInline
+    style={{
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      zIndex: 0,
+      filter: "brightness(0.88)",
+    }}
+  >
+    <source src="/videos/lambo/lamborghini-hero.mp4" />
+  </video>
+
+  {/* OVERLAY */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background:
+        "linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.65))",
+      zIndex: 1,
+    }}
+  />
+
+  {/* CONTENT */}
+  <motion.div
+    initial="hidden"
+    animate="visible"
+    variants={{
+      hidden: {},
+      visible: {
+        transition: {
+          staggerChildren: 0.25, // 🔥 smooth sequence
+        },
+      },
+    }}
+    style={{
+      position: "relative",
+      zIndex: 2,
+      textAlign: "center",
+      maxWidth: "900px",
+      padding: "0 20px",
+    }}
+  >
+    {/* EYEBROW */}
+    <motion.p
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+      }}
+      transition={{ duration: 0.6 }}
+      style={{
+        fontSize: "11px",
+        letterSpacing: "0.3em",
+        color: "#bbb1b1",
+        marginBottom: "22px",
+        fontFamily: "Montserrat, sans-serif",
+      }}
+    >
+      PRIVATE RESIDENCES · GURUGRAM
+    </motion.p>
+
+    {/* HEADLINE */}
+   <motion.h1
+  variants={{
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0 },
+  }}
+  transition={{ duration: 0.8 }}
+  style={{
+    fontSize: "clamp(32px, 5vw, 76px)", // 🔥 improved scaling
+    fontWeight: 500,
+    letterSpacing: "0.02em", // tighter = more luxury
+    lineHeight: 1.15,
+    color: "#ffffff",
+    marginBottom: "20px",
+  }}
+>
+  <span style={{ fontWeight: 700 }}>
+  Own a Lamborghini Residence.
+</span>
+
+<span
+  style={{
+    display: "block",
+    marginTop: "6px",
+    fontStyle: "italic",
+    fontWeight: 400,
+    opacity: 0.9,
+    fontSize: "clamp(20px, 2.5vw, 32px)",
+  }}
+>
+  Live Beyond Ordinary.
+</span>
+</motion.h1>
+
+    {/* SUBTEXT */}
+    <motion.p
+  variants={{
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  }}
+  transition={{ duration: 0.8 }}
+  style={{
+    fontSize: "clamp(14px, 1.6vw, 18px)", // 🔥 responsive
+    color: "rgba(255,255,255,0.75)",
+    marginBottom: "28px",
+    lineHeight: 1.6,
+    maxWidth: "520px", // 🔥 key fix (premium readability)
+    marginLeft: "auto",
+    marginRight: "auto",
+    fontWeight: 300,
+  }}
+>
+  Where global design meets elite living in India.
+</motion.p>
+    <motion.button
+  variants={{
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  }}
+  transition={{ duration: 0.6 }}
+  whileHover={{
+    y: -4,
+    scale: 1.02,
+    boxShadow: "0 14px 35px rgba(180,0,0,0.35)",
+  }}
+  whileTap={{ scale: 0.97 }}
+  onClick={() =>
+    document.getElementById("contact")?.scrollIntoView({
+      behavior: "smooth",
+    })
+  }
+  style={{
+    ...styles.formSubmit,
+    width: isMobile ? "100%" : "auto",
+    padding: isMobile ? "16px" : "20px 32px",
+    fontSize: isMobile ? "11px" : "12px",
+    letterSpacing: isMobile ? "0.25em" : "0.4em",
+    marginTop: "20px",
+  }}
+>
+  {isMobile
+    ? "Get Private Access"
+    : "Get Private Access Before Inventory Closes"}
+</motion.button>
+
+
+    {/* TRUST */}
+    <motion.p
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 },
+      }}
+      transition={{ duration: 0.6 }}
+      style={{
+        marginTop: "18px",
+        fontSize: "13px",
+        color: "rgba(255,255,255,0.7)",
+      }}
+    >
+      Limited Inventory · ₹5 Cr+ · Reserved for Select Buyers
+    </motion.p>
+  </motion.div>
+
+  {/* SCROLL */}
+  <div
+    style={{
+      position: "absolute",
+      bottom: "30px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      zIndex: 2,
+      textAlign: "center",
+      color: "rgba(255,255,255,0.6)",
+      fontSize: "10px",
+      letterSpacing: "0.3em",
+    }}
+  >
+    SCROLL
+    <div
+      style={{
+        marginTop: "8px",
+        width: "2px",
+        height: "30px",
+        background: "rgba(255,255,255,0.4)",
+        animation: "scrollLine 1.8s infinite",
+      }}
+    />
+  </div>
+
+
+
+</section>
+<section
+  id="overview"
+  style={{
+    padding: "120px 20px",
+    background: "#f5f0e8", // 🔥 key fix (light break)
+  }}
+>
+  <div style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center" }}>
+    
+    {/* IMAGE */}
+    <div
+      style={{
+        borderRadius: "14px",
+        overflow: "hidden",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.15)", // subtle depth
+      }}
+    >
+      <Image
+        src="/images/lambo/lambo.png"
+        alt="Lamborghini Residences Exterior"
+        width={1600}
+        height={900}
+        style={{
+          width: "100%",
+          height: "auto",
+          objectFit: "cover",
+        }}
+      />
+    </div>
+
+    {/* TEXT BELOW */}
+    <div style={{ marginTop: "50px", padding: "0 16px" }}>
+
+  <div style={{
+    letterSpacing: "0.35em",
+    fontSize: "11px",
+    color: "#b40000",
+    marginBottom: "14px",
+  }}>
+    ICONIC ARCHITECTURE
+  </div>
+
+ <h2 style={{
+  fontSize: "clamp(26px, 4vw, 42px)",
+  fontWeight: 300,
+  color: "#1a1a1a",
+  lineHeight: 1.2,
+  marginBottom: "16px",
+  letterSpacing: "-0.01em", // 🔥 subtle premium touch
+}}>
+  Designed to be Seen.
+</h2>
+
+  <p style={{
+    maxWidth: "520px",
+    margin: "0 auto",
+    fontSize: "14px",
+    color: "#5a5a5a",
+    lineHeight: 1.7,
+    fontFamily: "'Montserrat', sans-serif",
+  }}>
+    A bold expression of Italian design and engineering - where architecture becomes identity, and every detail reflects power, precision, and prestige.
+  </p>
+
+</div>
+
+  </div>
+
+  
+</section>
+
+{/* APARTMENTS */}
+<section id="apartments" style={{ padding: "100px 20px" }}>
+  <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    
+    {/* HEADER */}
+    <div style={styles.sectionLabel}>
+      <span style={styles.sectionLabelLine} /> Residences
+    </div>
+
+    <h2 style={styles.sectionTitle}>
+      Choose Your <span style={styles.sectionTitleAccent}>Canvas</span>
+    </h2>
+
+    <p style={{ ...styles.sectionBody, maxWidth: "520px" }}>
+      Three distinct residences. Each crafted with uncompromising detail.
+    </p>
+
+    {/* GRID */}
+    <div className="apts-grid">
+      {[
+        {
+          type: "3 BHK",
+          size: "2,000+",
+          price: "Starting ₹5 Cr*",
+          image: "/images/lambo/apartments/3bhk.png",
+          desc: "Ideal for refined city living",
+        },
+        {
+          type: "4 BHK",
+          size: "2,400+",
+          price: "Starting ₹6 Cr*",
+          image: "/images/lambo/apartments/4bhk.png",
+          desc: "Crafted for expansive luxury lifestyles",
+          highlight: true,
+        },
+        {
+          type: "4 BHK + Utility",
+          size: "2,800",
+          price: "Starting ₹7 Cr*",
+          image: "/images/lambo/apartments/4bhk-utility.png",
+          desc: "Ultimate space for elite living",
+        },
+      ].map((apt, i) => (
+        <motion.div
+          key={`${apt.type}-${i}`}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          whileHover={{ y: -8, scale: 1.01 }} // 🔥 FIXED (no CSS conflict)
+          transition={{ duration: 0.6, delay: i * 0.12 }}
+          viewport={{ once: true }}
+          className={`apt-card ${apt.highlight ? "highlight" : ""}`}
+        >
+          {/* 🔥 IMAGE ZOOM LAYER */}
+          <motion.div
+            className="apt-bg"
+            style={{
+              backgroundImage: `url(${apt.image})`,
+            }}
+            whileHover={{ scale: 1.08 }}
+            transition={{ duration: 0.6 }}
+          />
+
+          {/* BADGE */}
+          {apt.highlight && (
+            <div className="apt-badge">MOST POPULAR</div>
+          )}
+
+          {/* OVERLAY */}
+          <div className="apt-overlay" />
+
+          {/* CONTENT */}
+          <div className="apt-content">
+            <div className="apt-type">{apt.type}</div>
+
+            <div className="apt-size">
+              {apt.size}
+              <span className="apt-unit"> sq.ft.</span>
+            </div>
+
+            <div className="apt-price">{apt.price}</div>
+
+            <div className="apt-desc">{apt.desc}</div>
+
+            <button
+              onClick={() =>
+                document.getElementById("contact")?.scrollIntoView({
+                  behavior: "smooth",
+                })
+              }
+              className="apt-btn"
+            >
+              View Private Details
+            </button>
+          </div>
+        </motion.div>
+      ))}
+
+
+      
+    </div>
+
+    <h3 style={{
+  marginTop: "60px",
+  textAlign: "center",
+  fontSize: "18px",
+  color: "#fff"
+}}>
+  Secure Your Residence Before Prices Rise Further
+</h3>
+  </div>
+
+</section>
+{/* AMENITIES */}
+<div
+  id="amenities"
+  style={{
+    position: "relative",
+    background: "#0a0a0a",
+    padding: "140px 40px", // 🔥 more breathing space
+    overflow: "hidden",
+  }}
+>
+  {/* BACKGROUND */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      backgroundImage: "url('/images/lambo/amenities-bg.png')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      opacity: 0.55,
+      zIndex: 0,
+    }}
+  />
+
+  {/* OVERLAY */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background:
+        "linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0, 0, 0, 0.53))",
+      zIndex: 1,
+    }}
+  />
+
+  {/* CONTENT */}
+  <div style={{ position: "relative", zIndex: 2 }}>
+    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      
+      {/* LABEL */}
+      <div
+        style={{
+          fontSize: "10px",
+          letterSpacing: "0.4em",
+          color: "#d6d0c4",
+          textTransform: "uppercase",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "14px",
+        }}
+      >
+        <span style={{ width: "40px", height: "1px", background: "#d6d0c4" }} />
+        Amenities
+      </div>
+
+      {/* TITLE */}
+      <h2
+        style={{
+          fontSize: "clamp(42px, 6vw, 80px)", // 🔥 bigger
+          fontWeight: 300,
+          color: "#f5f3ef",
+          marginBottom: "24px",
+        }}
+      >
+        Crafted for{" "}
+        <span
+          style={{
+            color: "#d6d0c4",
+            fontStyle: "italic",
+            fontWeight: 600,
+            position: "relative",
+            display: "inline-block",
+          }}
+        >
+          Extraordinary
+          <span
+            style={{
+              position: "absolute",
+              left: 0,
+              bottom: "-8px",
+              width: "100%",
+              height: "2px",
+              background: "linear-gradient(90deg, #b40000, transparent)",
+            }}
+          />
+        </span>{" "}
+        Living
+      </h2>
+
+      {/* SUBTEXT */}
+      <p
+        style={{
+          maxWidth: "560px",
+          marginBottom: "100px",
+          fontSize: "15px", // 🔥 slightly bigger
+          color: "#9a9488",
+          lineHeight: 1.9,
+        }}
+      >
+        Not just amenities — a private ecosystem designed to elevate everyday
+        living into an experience of comfort, prestige, and effortless luxury.
+      </p>
+
+      {/* GRID */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "60px 70px", // 🔥 more space
+        }}
+      >
+        {amenities.map((a, i) => (
+          <motion.div
+            key={`${a.title}-${i}`}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: i * 0.08 }}
+            viewport={{ once: true }}
+            className="amenity-clean"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            {/* ICON */}
+            <div className="icon-wrapper">
+              {React.cloneElement(a.icon, {
+                color: "#d6d0c4",
+                size: 34,
+              })}
+            </div>
+
+            {/* TITLE */}
+            <div
+              style={{
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#f5f3ef",
+              }}
+            >
+              {a.title}
+            </div>
+
+            {/* DESC */}
+            <div
+              style={{
+                fontSize: "14px",
+                color: "#9a9488",
+                lineHeight: 1.8,
+              }}
+            >
+              {a.desc}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+ 
+</div>
+     
+     
+    {/* LOCATION */}
+<div
+  id="location"
+  style={{
+    background: "#0a0a0a",
+    padding: "clamp(110px, 12vw, 150px) 24px",
+  }}
+>
+  <div
+    className="location-section"
+    style={{
+      maxWidth: "1200px",
+      margin: "0 auto",
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "70px",
+      alignItems: "center",
+    }}
+  >
+    {/* LEFT */}
+    <div>
+      {/* LABEL */}
+      <div
+        style={{
+          fontSize: "11px",
+          letterSpacing: "0.35em",
+          color: "#d6d0c4",
+          textTransform: "uppercase",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "14px",
+        }}
+      >
+        <span style={{ width: "40px", height: "1px", background: "#d6d0c4" }} />
+        Location
+      </div>
+
+      {/* TITLE */}
+      <h2
+        style={{
+          fontSize: "clamp(36px, 5.5vw, 72px)",
+          fontWeight: 300,
+          color: "#f5f3ef",
+          marginBottom: "24px",
+          lineHeight: 1.2,
+        }}
+      >
+        Where{" "}
+        <span
+          style={{
+            color: "#d6d0c4",
+            fontStyle: "italic",
+            position: "relative",
+          }}
+        >
+          Location
+          <span
+            style={{
+              position: "absolute",
+              bottom: "-6px",
+              left: 0,
+              width: "100%",
+              height: "2px",
+              background: "linear-gradient(90deg,#b40000,transparent)",
+            }}
+          />
+        </span>{" "}
+        Becomes Advantage
+      </h2>
+
+      {/* SUBTEXT */}
+      <p
+        style={{
+          maxWidth: "480px",
+          marginBottom: "48px",
+          fontSize: "clamp(16px, 1.2vw, 18px)",
+          color: "#9a9488",
+          lineHeight: 1.9,
+        }}
+      >
+        At the center of Gurugram’s fastest-growing luxury corridor.
+      </p>
+
+      
+
+      {/* LIST */}
+      <ul
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "18px",
+        }}
+      >
+        {locationPoints.map((p, i) => (
+          <li
+  key={`${p.text}-${i}`}
+  style={{
+    display: "flex",
+    alignItems: "flex-start", // 🔥 KEY FIX
+    gap: "14px",
+   
+    color: "#d6d0c4",
+    fontSize: "clamp(16px, 1.1vw, 17px)",
+    fontWeight: 500,
+    lineHeight: 1.6, // 🔥 IMPORTANT
+  }}
+>
+            {/* ⚪ neutral dot (not red) */}
+            <span
+  style={{
+    width: "8px",
+    height: "8px",
+    background: "#d6d0c4",
+    borderRadius: "50%",
+    marginTop: "6px", // 🔥 MAGIC FIX
+    flexShrink: 0,
+  }}
+/>
+            {p.text}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {/* RIGHT (MAP HERO) */}
+    <div
+      style={{
+        position: "relative",
+        height: "clamp(320px, 45vw, 520px)",
+        borderRadius: "18px",
+        overflow: "hidden",
+        boxShadow: "0 40px 100px rgba(0,0,0,0.65)",
+      }}
+    >
+      {/* MAP IMAGE */}
+      <img
+        src="/images/lambo/location-map.png"
+        alt="Location Map"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          position: "absolute",
+          inset: 0,
+        }}
+      />
+
+      {/* DEPTH OVERLAY */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(circle at center, rgba(0,0,0,0.2), rgba(0,0,0,0.7))",
+        }}
+      />
+
+      {/* BASE OVERLAY */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top, rgba(10,10,10,0.85), rgba(10,10,10,0.25))",
+        }}
+      />
+
+      {/* 🔴 SINGLE FOCUS PIN */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <div className="map-pin" />
+      </div>
+
+      {/* LABEL */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "22px",
+          left: "22px",
+          fontSize: "12px",
+          letterSpacing: "0.2em",
+          color: "#d6d0c4",
+          opacity: 0.9,
+        }}
+      >
+        SECTOR 71 · SPR · GURUGRAM
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<section
+  id="invest"
+  style={{
+    position: "relative",
+    padding: "130px 24px",
+    overflow: "hidden",
+  }}
+>
+  {/* 🎥 BACKGROUND VIDEO */}
+  <video
+    autoPlay
+    loop
+    muted
+    playsInline
+    style={{
+      position: "absolute",
+      inset: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      zIndex: 0,
+      filter: "brightness(0.5) contrast(1.05)",
+      transform: "scale(1.08)",
+      animation: "slowZoom 18s ease-in-out infinite alternate",
+    }}
+  >
+    <source src="/videos/lambo/invest-bg.mp4" />
+  </video>
+
+  {/* 🌑 OVERLAY */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background:
+        "linear-gradient(180deg, rgba(10,10,10,0.65), rgba(10,10,10,0.85))",
+      zIndex: 1,
+    }}
+  />
+
+  {/* ✨ DEPTH */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background:
+        "radial-gradient(circle at center, rgba(0,0,0,0.2), rgba(0,0,0,0.8))",
+      zIndex: 1,
+    }}
+  />
+
+  {/* 🔴 SUBTLE BRAND GLOW */}
+  <div
+    style={{
+      position: "absolute",
+      top: "35%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "520px",
+      height: "520px",
+      background:
+        "radial-gradient(circle, rgba(180,0,0,0.06), transparent 70%)",
+      zIndex: 1,
+    }}
+  />
+
+  {/* CONTENT */}
+  <div style={{ position: "relative", zIndex: 2 }}>
+    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      
+      {/* LABEL */}
+      <div
+        style={{
+          fontSize: "11px",
+          letterSpacing: "0.35em",
+          color: "#d6d0c4",
+          textTransform: "uppercase",
+          marginBottom: "18px",
+          display: "flex",
+          alignItems: "center",
+          gap: "14px",
+        }}
+      >
+        <span style={{ width: "40px", height: "1px", background: "#d6d0c4" }} />
+        Investment Case
+      </div>
+
+      {/* TITLE */}
+      <h2
+        style={{
+          fontSize: "clamp(38px, 5.5vw, 72px)",
+          fontWeight: 300,
+          color: "#f5f3ef",
+          marginBottom: "20px",
+          lineHeight: 1.2,
+        }}
+      >
+        Why <span style={{ fontStyle: "italic" }}>Smart Capital</span> Is Moving Here
+      </h2>
+
+      {/* POWER LINE */}
+      <p
+        style={{
+          fontSize: "18px",
+          color: "#d6d0c4",
+          marginBottom: "18px",
+        }}
+      >
+        Limited supply. Global demand. Strategic location.
+      </p>
+
+      {/* SUBTEXT */}
+      <p
+        style={{
+          maxWidth: "600px",
+          marginBottom: "70px",
+          fontSize: "clamp(14px, 1.1vw, 16px)",
+          color: "#a89880",
+          lineHeight: 1.8,
+        }}
+      >
+        The next global luxury drop has arrived in India.  
+        Positioned in Gurugram’s fastest-growing corridor with strong appreciation potential.
+      </p>
+
+      {/* GRID WITH MOTION */}
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={{
+          hidden: {},
+          show: {
+            transition: { staggerChildren: 0.15 },
+          },
+        }}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "24px",
+        }}
+      >
+        {reasons.map((r, i) => (
+          <motion.div
+            key={`${r.title}-${i}`}
+            variants={{
+              hidden: { opacity: 0, y: 40 },
+              show: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.6 }}
+            style={{
+              background: "rgba(255,255,255,0.025)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              padding: "34px 28px",
+              display: "flex",
+              gap: "18px",
+              alignItems: "flex-start",
+              backdropFilter: "blur(8px)",
+              transition: "all 0.4s ease",
+            }}
+            className="reasonCard"
+          >
+            {/* NUMBER */}
+            <div
+              style={{
+                fontSize: "42px",
+                fontWeight: 300,
+                color: "rgba(180,0,0,0.22)",
+                minWidth: "50px",
+                fontStyle: "italic",
+              }}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </div>
+
+            {/* TEXT */}
+            <div>
+              <div
+                style={{
+                  fontSize: "17px",
+                  fontWeight: 600,
+                  color: "#f5f3ef",
+                  marginBottom: "6px",
+                }}
+              >
+                {r.title}
+              </div>
+
+              <div
+                style={{
+                  fontSize: "13px",
+                  color: "#a89880",
+                  lineHeight: 1.7,
+                }}
+              >
+                {r.body}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* CTA */}
+      <div
+        style={{
+          marginTop: "70px",
+          textAlign: "center",
+        }}
+      >
+       <p style={{
+  marginTop: "16px",
+  fontSize: "13px",
+  color: "rgba(255,255,255,0.7)",
+}}>
+  Limited residences · High-net-worth investors only
+</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+      {/* FORM */}
+     <div id="contact" style={styles.formSection}>
+  <div style={styles.formGlow} />
+
+  <div style={styles.formInner}>
+    {/* LABEL */}
+    <div style={{ ...styles.sectionLabel, justifyContent: "center" }}>
+      <span style={styles.sectionLabelLine} />
+      Register Interest
+      <span style={styles.sectionLabelLine} />
+    </div>
+
+    {/* TITLE */}
+    <h2 style={styles.formTitle}>
+      Claim Your <span style={styles.sectionTitleAccent}>Priority Access</span>
+    </h2>
+
+    {/* SUCCESS STATE */}
+    {submitted ? (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "60px 20px",
+          animation: "fadeIn 0.5s ease",
+        }}
+      >
+        <div style={{ fontSize: "50px", marginBottom: "12px" }}>✓</div>
+
+        <h3 style={{ color: "#f5f0e8", fontSize: "22px", marginBottom: "10px" }}>
+          You're on the Priority List
+        </h3>
+
+        <p
+          style={{
+            color: "#a89880",
+            fontFamily: "Montserrat,sans-serif",
+            fontSize: "14px",
+          }}
+        >
+          Our luxury sales team will contact you within 24 hours.
+        </p>
+
+        {/* OPTIONAL RESET */}
+        <button
+          onClick={() => setSubmitted(false)}
+          style={{
+            marginTop: "20px",
+            padding: "10px 20px",
+            borderRadius: "6px",
+            border: "1px solid #c8a96a",
+            background: "transparent",
+            color: "#c8a96a",
+            cursor: "pointer",
+          }}
+        >
+          Submit Another Request
+        </button>
+      </div>
+    ) : (
+      <>
+        {/* FORM GRID */}
+        <div
+          style={{
+            ...styles.formGrid,
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          }}
+          className="form-grid"
+        >
+          <input
+            style={styles.formInput}
+            placeholder="Your Full Name *"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
+          />
+
+          <input
+            style={styles.formInput}
+            placeholder="Phone Number *"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
+          />
+
+          <input
+            style={{ ...styles.formInput, gridColumn: "1 / -1" }}
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+
+          <select
+            style={styles.formSelect}
+            value={formData.config}
+            onChange={(e) =>
+              setFormData({ ...formData, config: e.target.value })
+            }
+          >
+            <option value="">Select Configuration</option>
+            <option>3 BHK - ₹5 Cr+</option>
+            <option>4 BHK - ₹6 Cr+</option>
+            <option>4 BHK + Utility - ₹7 Cr+</option>
+          </select>
+
+          <textarea
+            style={{
+              ...styles.formInput,
+              gridColumn: "1 / -1",
+              height: "100px",
+              resize: "none",
+            }}
+            placeholder="Any specific requirements..."
+            value={formData.message}
+            onChange={(e) =>
+              setFormData({ ...formData, message: e.target.value })
+            }
+          />
+        </div>
+
+        {/* SUBMIT BUTTON */}
+        <button
+          style={styles.formSubmit}
+          className="btn-hover"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Request Priority Callback"}
+        </button>
+
+        {/* NOTE */}
+        <p style={styles.formNote}>
+          Your information is completely confidential. No spam, ever.
+        </p>
+      </>
+    )}
+  </div>
+</div>
+
+      {/* FOOTER */}
+      <footer
+  style={{
+    background: "#0a0a0a",
+    padding: "80px 30px 40px",
+    color: "#eaeaea",
+  }}
+>
+  <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    
+    {/* TOP */}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1.5fr 1fr 1fr",
+        gap: "50px",
+        marginBottom: "50px",
+      }}
+      className="footer-top"
+    >
+      {/* BRAND */}
+      <div>
+        <img
+          src="/images/lambo/lambologo.png"
+          alt="Lamborghini Residences"
+          style={{
+            height: "70px",
+            marginBottom: "18px",
+            opacity: 0.9,
+          }}
+        />
+
+        <p
+          style={{
+            fontSize: "14px",
+            lineHeight: 1.6,
+            color: "#a0a0a0",
+            maxWidth: "420px",
+          }}
+        >
+          Italian design meets ultra-luxury living in Gurugram.
+        </p>
+      </div>
+
+      {/* LINKS */}
+      <div>
+        <div
+          style={{
+            fontSize: "11px",
+            letterSpacing: "0.25em",
+            marginBottom: "18px",
+            color: "#777",
+          }}
+        >
+          NAVIGATION
+        </div>
+
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {[
+            { label: "Overview", id: "overview" },
+            { label: "Amenities", id: "amenities" },
+            { label: "Location", id: "location" },
+            { label: "Contact", id: "contact" },
+          ].map((l) => (
+            <li key={l.label} style={{ marginBottom: "10px" }}>
+              <a
+                href={`#${l.id}`}
+                style={{
+                  color: "#cfcfcf",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                }}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* CONTACT */}
+      <div>
+        <div
+          style={{
+            fontSize: "11px",
+            letterSpacing: "0.25em",
+            marginBottom: "18px",
+            color: "#777",
+          }}
+        >
+          CONTACT
+        </div>
+
+        <p
+          style={{
+            fontSize: "14px",
+            color: "#cfcfcf",
+            lineHeight: 1.6,
+          }}
+        >
+          +91 98114 22554<br />
+          info@markrealesstate.com
+        </p>
+      </div>
+    </div>
+
+    {/* DIVIDER */}
+    <div
+      style={{
+        height: "1px",
+        background: "rgba(255,255,255,0.08)",
+        margin: "30px 0",
+      }}
+    />
+
+    {/* DISCLAIMER (SHORTENED) */}
+    <p
+      style={{
+        fontSize: "12px",
+        color: "#666",
+        lineHeight: 1.6,
+        textAlign: "center",
+        maxWidth: "750px",
+        margin: "0 auto 20px",
+      }}
+    >
+      *Prices and availability are subject to change. Please verify all project details with the developer before making any decision.
+    </p>
+
+    {/* MARKETER (KEPT — CLEAN & PREMIUM) */}
+    <p
+      style={{
+        textAlign: "center",
+        fontSize: "13px",
+        color: "#888",
+        lineHeight: 1.6,
+      }}
+    >
+      Marketed by{" "}
+      <a
+        href="/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#eaeaea",
+          textDecoration: "none",
+          borderBottom: "1px solid rgba(255,255,255,0.2)",
+        }}
+      >
+        Shankar Kohli
+      </a>{" "}
+      · Founder,{" "}
+      <a
+        href="https://markrealesstate.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: "#eaeaea",
+          textDecoration: "none",
+          borderBottom: "1px solid rgba(255,255,255,0.2)",
+        }}
+      >
+        Mark Real Esstate
+      </a>
+    </p>
+  </div>
+
+ 
+</footer>
+
+
+{/* GLOBAL STYLES — SINGLE SOURCE */}
+<style jsx global>{`
+  @keyframes scrollLine {
+    0% { transform: translateY(0); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+  }
+
+  .apts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .apt-card {
+    position: relative;
+    height: 460px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .apt-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(10,10,10,0.82),
+      rgba(10,10,10,0.2)
+    );
+  }
+
+  .icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .apts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+
+ footer a:hover {
+      color: #b40000;
+      border-bottom: 1px solid #b40000;
+    }
+@keyframes slowZoom {
+      from { transform: scale(1.05); }
+      to { transform: scale(1.15); }
+    }
+
+    .reasonCard:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255,255,255,0.2);
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    }
+
+    .invest-cta:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: #fff;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      #invest div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+     @media (max-width: 900px) {
+      .location-section {
+        grid-template-columns: 1fr !important;
+        gap: 60px !important;
+      }
+    }
+
+     .icon-wrapper {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(214,208,196,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+    }
+
+    /* hover only animation */
+    .amenity-clean:hover .icon-wrapper {
+      background: rgba(214,208,196,0.15);
+      box-shadow: 0 0 18px rgba(180,0,0,0.12);
+    }
+
+    .amenity-clean:hover svg {
+      transform: scale(1.08) translateY(-4px);
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 6px rgba(180,0,0,0.3));
+    }
+
+     .apts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 50px;
+    }
+
+    .apt-card {
+      position: relative;
+      height: 460px;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    /* 🔥 BACKGROUND LAYER */
+    .apt-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+
+    /* 🔥 LIGHTER OVERLAY */
+    .apt-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10,10,10,0.82),
+        rgba(10,10,10,0.2)
+      );
+      z-index: 1;
+    }
+
+    .apt-content {
+      position: relative;
+      z-index: 2;
+      padding: 26px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .apt-type {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      color: #c8b89a;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .apt-size {
+      font-size: 36px;
+      font-weight: 300;
+      color: #f5f0e8;
+    }
+
+    .apt-unit {
+      font-size: 14px;
+      color: #a89880;
+    }
+
+    .apt-price {
+      font-size: 16px;
+      color: rgba(245,240,232,0.9);
+      margin-top: 10px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .apt-desc {
+      font-size: 12px;
+      color: #a89880;
+      margin-top: 6px;
+      line-height: 1.5;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .apt-btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid rgba(200,184,154,0.5);
+      backdrop-filter: blur(6px);
+      color: #f5f0e8;
+      border-radius: 30px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .apt-btn:hover {
+      background: rgba(200,184,154,0.12);
+      border-color: #c8b89a;
+      transform: translateY(-2px);
+    }
+
+    /* 🔥 HIGHLIGHT (SUBTLE PREMIUM) */
+    .apt-card.highlight {
+      border: 1px solid rgba(200,184,154,0.25);
+      transform: scale(1.03);
+    }
+
+    .apt-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      background: #b40000;
+      padding: 6px 10px;
+      border-radius: 20px;
+      z-index: 3;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      .apts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .apts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .apt-card {
+        height: 360px;
+      }
+
+      .apt-card.highlight {
+        transform: none;
+      }
+    }
+
+     @keyframes scrollLine {
+      0% { transform: translateY(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(10px); opacity: 0; }
+    }
+
+    .btn-hover {
+  transition: all 0.3s ease;
+}
+
+}
+}
+    }
+
+
+
+
+
+
+
+
+
+
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(180,0,0,0.4),0 0 0 0 rgba(180,0,0,0.2)} 50%{box-shadow:0 0 0 24px rgba(180,0,0,0.1),0 0 0 48px rgba(180,0,0,0.05)}}
         @keyframes bounceY {0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)}}
         @keyframes fadeIn {from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
         .map-pulse { animation: pulse 2.5s ease-in-out infinite; }
@@ -1062,12 +2748,6 @@ export default function LamborghiniResidences() {
   50% { opacity: 1; }
 }
 
-/* APPLY TO ICONS */
-.location-icon svg {
-  animation: floatSoft 4s ease-in-out infinite,
-             iconPulse 3.5s ease-in-out infinite;
-  transition: all 0.3s ease;
-}
 
 /* STAGGER (IMPORTANT → organic feel) */
 .locationItem:nth-child(1) svg { animation-delay: 0s; }
@@ -1114,1343 +2794,109 @@ input:focus {
   border-bottom: 1px solid #b40000;
   box-shadow: 0 8px 25px rgba(180,0,0,0.2);
 }
-      `}</style>
 
-     {/* NAV */}
-<nav
-  style={{
-    ...styles.nav,
-    background: scrolled
-      ? "rgba(10,10,10,0.98)"
-      : "linear-gradient(180deg, rgba(10,10,10,0.95) 0%, transparent 100%)",
-  }}
->
-  {/* LOGO */}
 
-<div
-  style={{ cursor: "pointer" }}
-  onClick={() =>
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    })
+
+.apts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .apts-grid {
+    grid-template-columns: 1fr;
   }
->
-  <div style={styles.navLogo}>
-    <Image
-      src="/images/lambo/lamborghini-logo.png"
-      alt="Lamborghini"
-      width={160}
-      height={40}
-      style={{
-        height: "30px",
-        width: "auto",
-      }}
-      priority
-    />
-    <div style={styles.navLogoSub}>Residences · Gurugram</div>
-  </div>
-</div>
-  {/* NAV LINKS */}
-  <ul style={styles.navLinks} className="nav-links">
-    {[
-      { label: "Overview", id: "overview" },
-      { label: "Apartments", id: "apartments" },
-      { label: "Amenities", id: "amenities" },
-      { label: "Location", id: "location" },
-      { label: "Invest", id: "invest" },
-    ].map((l) => (
-      <li key={l.label}>
-        <a
-          href={`#${l.id}`}
-          style={{
-            ...styles.navLink,
-            textDecoration: "none",
-          }}
-        >
-          {l.label}
-        </a>
-      </li>
-    ))}
-  </ul>
+}
+
+/* APARTMENT CARD */
+.apt-card {
+  position: relative;
+  height: 460px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.apt-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.apt-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
+  z-index: 1;
+}
+
+.apt-content {
+  position: relative;
+  z-index: 2;
+  padding: 28px;
+}
+
+.apt-btn {
+  margin-top: 16px;
+  padding: 10px 18px;
+  background: #b40000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+/* ANIMATIONS */
+@keyframes scrollLine {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+
+@keyframes slowZoom {
+  0% { transform: scale(1.05); }
+  100% { transform: scale(1.12); }
+}
+
+/* LOCATION FIX */
+@media (max-width: 768px) {
+  .location-section {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* INVEST GRID */
+@media (max-width: 768px) {
+  #invest div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ICON */
+.icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(180,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+`}</style>
 
-  {/* CTA (CALL BUTTON) */}
-  <a
-    href="tel:+919811422554"
-    style={{
-      ...styles.navCta,
-      textDecoration: "none",
-      display: "inline-block",
-    }}
-    className="btn-hover"
-  >
-    +91 98114 22554
-  </a>
-</nav>
-{/* HERO */}
-
-<section
-  style={{
-    position: "relative",
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  }}
->
-  {/* VIDEO */}
-  <video
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      zIndex: 0,
-      filter: "brightness(0.7) contrast(1.1)",
-    }}
-  >
-    <source src="/videos/lambo/lamborghini-hero.mp4" />
-  </video>
-<div
-  style={{
-    position: "absolute",
-    inset: 0,
-    background: `
-  linear-gradient(110deg, rgba(0,0,0,0.6) 15%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.2)),
-  radial-gradient(circle at 20% 40%, rgba(0,0,0,0.5), transparent 60%),
-  radial-gradient(circle at 80% 20%, rgba(255,0,0,0.08), transparent 60%)
-`,
-    zIndex: 1,
-  }}
-/>
-
-  {/* LIGHT SWEEP */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.08), transparent 60%)",
-      zIndex: 1,
-      animation: "lightSweep 8s linear infinite",
-    }}
-  />
-
-  {/* CONTENT */}
-  <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 1 }}
-    style={{
-      position: "relative",
-      zIndex: 2,
-      width: "100%",
-      maxWidth: "1200px",
-      padding: "0 40px",
-      display: "grid",
-      gridTemplateColumns: "1fr 420px",
-      gap: "60px",
-      alignItems: "center",
-    }}
-  >
-    {/* LEFT */}
-<div style={{ maxWidth: "600px" }}>
-  {/* EYEBROW */}
-  <div
-    style={{
-      fontSize: "10px",
-      letterSpacing: "0.5em",
-      color: "#b40000",
-      marginBottom: "22px",
-      fontFamily: "'Montserrat', sans-serif",
-      opacity: 0.9,
-    }}
-  >
-    RERA APPROVED · NEW LAUNCH 2026
-  </div>
-
-  {/* TITLE */}
-  <h1
-    style={{
-      fontSize: "clamp(60px, 7vw, 110px)",
-      fontWeight: 300,
-      lineHeight: 1.02,
-      color: "#f5f0e8",
-      letterSpacing: "-0.02em",
-      marginBottom: "16px",
-      textShadow: "0 8px 40px rgba(0,0,0,0.6)",
-    }}
-  >
-    Lamborghini
-    <br />
-    <span
-      style={{
-        fontWeight: 700,
-        color: "#b40000",
-        fontStyle: "italic",
-      }}
-    >
-      Residences
-    </span>
-  </h1>
-<p
-  style={{
-    fontSize: "18px",
-    color: "rgba(245,240,232,0.85)",
-    textShadow: "0 10px 60px rgba(0,0,0,0.9)",
-    marginBottom: "28px",
-    fontWeight: 300,
-    lineHeight: 1.6,
-    maxWidth: "520px",
-  }}
->
-  India’s First Lamborghini Branded Residences in Gurgaon  
-</p>
-  {/* PREMIUM DIVIDER */}
-  <div
-    style={{
-      width: "80px",
-      height: "1px",
-      background: "linear-gradient(90deg, #b40000, transparent)",
-      margin: "26px 0",
-    }}
-  />
-
-  {/* LOCATION */}
-  <p
-    style={{
-      fontSize: "16px",
-      color: "#a89880",
-      letterSpacing: "0.25em",
-      fontFamily: "'Montserrat', sans-serif",
-      marginBottom: "36px",
-    }}
-  >
-    SECTOR 71 · SOUTHERN PERIPHERAL ROAD · GURUGRAM
-  </p>
-
-  {/* FEATURES GRID */}
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "14px 40px",
-      fontSize: "13px",
-      fontFamily: "'Montserrat', sans-serif",
-      color: "#a89880",
-    }}
-  >
-    <div style={{ display: "flex", gap: "10px" }}>
-      <span style={{ color: "#b40000" }}>01</span>
-      <span>800 Ultra Luxury Residences</span>
-    </div>
-
-    <div style={{ display: "flex", gap: "10px" }}>
-      <span style={{ color: "#b40000" }}>02</span>
-      <span>Italian Design by Lamborghini</span>
-    </div>
-
-    <div style={{ display: "flex", gap: "10px" }}>
-      <span style={{ color: "#b40000" }}>03</span>
-      <span>Private Lift & Skyline Views</span>
-    </div>
-
-    <div style={{ display: "flex", gap: "10px" }}>
-      <span style={{ color: "#b40000" }}>04</span>
-      <span>Starting ₹5 Cr+</span>
-    </div>
-  </div>
-
-  {/* BOTTOM LINE (SUBTLE LUXURY TOUCH) */}
-  <div
-    style={{
-      marginTop: "40px",
-      width: "120px",
-      height: "1px",
-      background: "rgba(180,0,0,0.2)",
-    }}
-  />
-</div>
-    {/* RIGHT FORM */}
-    <FormComponent />
-  </motion.div>
-
-  {/* ANIMATIONS */}
-  <style>{`
-    @keyframes lightSweep {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255,0,0,0.3);
-    }
-
-    @media(max-width:768px){
-      section > div {
-        grid-template-columns: 1fr !important;
-      }
-    }
-  `}</style>
-
-   <div style={styles.scrollIndicator} className="scroll-bounce">
-          <span style={{ letterSpacing: "0.3em", fontSize: "9px", fontFamily: "Montserrat,sans-serif" }}>SCROLL</span>
-          <svg width="14" height="20" viewBox="0 0 14 20" fill="none"><rect x="5.5" y="1" width="3" height="7" rx="1.5" fill="none" stroke="rgba(180,0,0,0.6)" strokeWidth="1.5"/><line x1="7" y1="12" x2="7" y2="19" stroke="rgba(180,0,0,0.6)" strokeWidth="1.5"/><polyline points="4,16 7,19 10,16" fill="none" stroke="rgba(180,0,0,0.6)" strokeWidth="1.5"/></svg>
-        </div>
-</section>
-
-
- <section id="overview"
-  style={{
-    padding: "120px 0",
-    position: "relative",
-  }}
->
-  <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-    <Image
-      src="/images/lambo/lambo.png"
-      alt="Lamborghini Residences Exterior"
-      width={1600}
-      height={900}
-      style={{
-        width: "100%",
-        height: "auto",
-        objectFit: "cover",
-      }}
-    />
-  </div>
-
-  {/* TEXT OVERLAY */}
-  <div
-    style={{
-      position: "absolute",
-      bottom: "60px",
-      left: "50%",
-      transform: "translateX(-50%)",
-      textAlign: "center",
-      color: "#fff",
-    }}
-  >
-    <div style={{ letterSpacing: "0.4em", fontSize: "10px", color: "#b40000" }}>
-      ICONIC ARCHITECTURE
-    </div>
-    <h2 style={{ fontSize: "40px", fontWeight: 300 }}>
-      Designed to be Seen.
-    </h2>
-  </div>
-</section>
-   {/* COLLAB */}
-<div
-  style={{
-    ...styles.collabSection,
-    position: "relative",
-    overflow: "hidden",
-  }}
->
-  {/* SUBTLE RED GLOW */}
-  <div
-    style={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      width: "500px",
-      height: "500px",
-      background:
-        "radial-gradient(circle, rgba(180,0,0,0.12), transparent 70%)",
-      zIndex: 0,
-    }}
-  />
-
-  <div
-    style={{
-      ...styles.collabInner,
-      gridTemplateColumns: "1fr 120px 1fr",
-      position: "relative",
-      zIndex: 2,
-      alignItems: "center",
-    }}
-    className="collab-inner"
-  >
-    {/* LEFT BRAND */}
-    <div style={styles.collabBrand}>
-      
-      {/* LOGO */}
-      <img
-        src="/images/lambo/lamborghini-logo.png"
-        alt="Tonino Lamborghini"
-        style={{
-          height: "42px",
-          marginBottom: "18px",
-          opacity: 0.95,
-          filter: "drop-shadow(0 6px 25px rgba(180,0,0,0.3))",
-        }}
-      />
-
-      <div style={{ ...styles.collabBrandName, color: "#c40000" }}>
-        TONINO LAMBORGHINI
-      </div>
-
-      <div style={styles.collabBrandSub}>
-        Italian Heritage · Global Luxury
-      </div>
-
-      {/* 🔥 SHORT POWER LINE */}
-      <p
-        style={{
-          fontSize: "13px",
-          marginTop: "14px",
-          color: "#a89880",
-          fontFamily: "'Montserrat', sans-serif",
-        }}
-      >
-        Italian excellence redefining global luxury living.
-      </p>
-    </div>
-
-    {/* CENTER SYMBOL */}
-    <div
-      style={{
-        textAlign: "center",
-        fontSize: "42px",
-        color: "rgba(180,0,0,0.5)",
-        fontWeight: 300,
-      }}
-    >
-      ×
-    </div>
-
-    {/* RIGHT BRAND */}
-    <div style={styles.collabBrand}>
-      
-      {/* LOGO */}
-      <img
-        src="/images/lambo/signature-logo.png"
-        alt="Signature Global"
-        style={{
-          height: "50px",
-          width: "auto",
-          marginBottom: "18px",
-          opacity: 0.95,
-          filter: "drop-shadow(0 6px 20px rgba(0,0,0,0.3))",
-        }}
-      />
-
-      <div style={{ ...styles.collabBrandName, color: "#f5f0e8" }}>
-        SIGNATURE GLOBAL
-      </div>
-
-      <div style={styles.collabBrandSub}>
-        India's Trusted Developer
-      </div>
-
-      {/* 🔥 SHORT POWER LINE */}
-      <p
-        style={{
-          fontSize: "13px",
-          marginTop: "14px",
-          color: "#a89880",
-          fontFamily: "'Montserrat', sans-serif",
-        }}
-      >
-        Delivering landmark developments across Gurugram.
-      </p>
-    </div>
-  </div>
-
-  {/* BOTTOM LUXURY LINE */}
-  <div
-    style={{
-      marginTop: "60px",
-      width: "120px",
-      height: "1px",
-      background: "linear-gradient(90deg, #b40000, transparent)",
-      marginLeft: "auto",
-      marginRight: "auto",
-    }}
-  />
-</div>
-<section
-  style={{
-    position: "relative",
-    height: "80vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  }}
->
-  {/* 🎥 VIDEO */}
-  <video
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{
-      position: "absolute",
-      inset: 0,
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      zIndex: 0,
-      filter: "brightness(0.45) contrast(1.1)",
-    }}
-  >
-    <source src="/videos/lambo/invest-bg.mp4" />
-  </video>
-
-  {/* 🔥 DARK OVERLAY */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.6))",
-      zIndex: 1,
-    }}
-  />
-
-  {/* ✨ CONTENT */}
-  <div
-    style={{
-      position: "relative",
-      zIndex: 2,
-      textAlign: "center",
-      maxWidth: "800px",
-      padding: "0 20px",
-    }}
-  >
-    {/* SMALL TAG */}
-    <div
-      style={{
-        fontSize: "10px",
-        letterSpacing: "0.5em",
-        color: "#b40000",
-        marginBottom: "20px",
-        fontFamily: "'Montserrat', sans-serif",
-      }}
-    >
-      GLOBAL LAUNCH
-    </div>
-
-    {/* MAIN FOMO LINE */}
-    <h2
-      style={{
-        fontSize: "clamp(32px, 5vw, 56px)",
-        fontWeight: 300,
-        color: "#f5f0e8",
-        lineHeight: 1.2,
-        marginBottom: "20px",
-      }}
-    >
-      Expected to Sell Out <br />
-      <span style={{ color: "#b40000", fontStyle: "italic" }}>
-        Within Days
-      </span>
-    </h2>
-
-    {/* SUPPORT LINE */}
-    <p
-      style={{
-        fontSize: "14px",
-        color: "#c8b89a",
-        fontFamily: "'Montserrat', sans-serif",
-        lineHeight: 1.7,
-      }}
-    >
-      From Miami to Dubai, Lamborghini-branded residences are claimed  
-      within days of launch. Gurugram is next.
-    </p>
-
-    {/* OPTIONAL CTA */}
-   <div style={{ marginTop: "30px" }}>
-  <button
-    onClick={() =>
-      document.getElementById("contact")?.scrollIntoView({
-        behavior: "smooth",
-      })
-    }
-    style={{
-      background: "linear-gradient(135deg, #b40000, #7a0000)",
-      border: "none",
-      padding: "14px 36px",
-      color: "#fff",
-      fontSize: "11px",
-      letterSpacing: "0.3em",
-      cursor: "pointer",
-    }}
-    className="btn-hover"
-  >
-    Get Priority Access →
-  </button>
-</div>
-  </div>
-</section>
-
-
-    {/* APARTMENTS */}
-<section id="apartments" style={{ padding: "100px 40px" }}>
-  <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-    
-    <div style={styles.sectionLabel}>
-      <span style={styles.sectionLabelLine} /> Residences
-    </div>
-
-    <h2 style={styles.sectionTitle}>
-      Choose Your <span style={styles.sectionTitleAccent}>Canvas</span>
-    </h2>
-
-    <p style={styles.sectionBody}>
-      Three configurations. One standard — absolute luxury. Each residence is a manifesto of space, light, and Italian-led design intent.
-    </p>
-
-    {/* GRID */}
-    <div style={styles.aptsGrid} className="apts-grid">
-      {[
-        {
-          type: "3 BHK",
-          size: "2,000+",
-          price: "Starting ₹5 Cr*",
-          image: "/images/lambo/apartments/3bhk.png",
-          features: [
-            "Grand living & dining",
-            "Premium Italian finishes",
-            "Floor-to-ceiling windows",
-            "Panoramic balcony",
-          ],
-        },
-        {
-          type: "4 BHK",
-          size: "2,400+",
-          price: "Starting ₹6 Cr*",
-          image: "/images/lambo/apartments/4bhk.png",
-          features: [
-            "Expanded living spaces",
-            "Private utility alcove",
-            "Double master suite",
-            "Smart home integration",
-          ],
-        },
-        {
-          type: "4 BHK + Utility",
-          size: "2,800",
-          price: "Starting ₹7 Cr*",
-          image: "/images/lambo/apartments/4bhk-utility.png",
-          features: [
-            "Flagship configuration",
-            "Dedicated staff quarters",
-            "Extended wraparound balcony",
-            "Private foyer entrance",
-          ],
-        },
-      ].map((apt, i) => (
-  <div key={`${apt.type}-${i}`}
-          style={{
-            ...styles.aptCard,
-            backgroundImage: `url(${apt.image})`,
-          }}
-          className="apt-card-hover"
-        >
-          {/* OVERLAY */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to top, rgba(15,8,4,0.95), rgba(15,8,4,0.4))",
-              zIndex: 1,
-            }}
-          />
-
-          {/* CONTENT */}
-          <div style={{ position: "relative", zIndex: 2 }}>
-            
-            <div style={styles.aptCardAccent} />
-
-            <div style={styles.aptType}>{apt.type}</div>
-
-            <div style={styles.aptSize}>
-              {apt.size}
-              <span style={styles.aptSizeUnit}>sq.ft.</span>
-            </div>
-
-            <div style={styles.aptPrice}>{apt.price}</div>
-
-            {apt.features.map((f, i) => (
-  <div key={`${f}-${i}`} style={styles.aptFeature}>
-                <div style={styles.aptFeatureDot} /> {f}
-              </div>
-            ))}
-
-            <button
-             onClick={() =>
-      document.getElementById("contact")?.scrollIntoView({
-        behavior: "smooth",
-      })
-    }
-              style={{
-                ...styles.btnSecondary,
-                marginTop: "24px",
-                width: "100%",
-              }}
-              className="btn-hover"
-            >
-              Enquire
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-    {/* AMENITIES */}
-<div id="amenities" style={styles.amenitiesSection}>
-  
-  {/* BACKGROUND IMAGE */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      backgroundImage: "url('/images/lambo/amenities-bg.png')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      opacity: 0.5,
-      zIndex: 0,
-    }}
-  />
-
-  {/* LIGHT OVERLAY */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(to bottom, rgba(83, 80, 79, 0.51), rgba(19, 18, 18, 0.78))",
-      zIndex: 1,
-    }}
-  />
-
-  {/* CONTENT */}
-  <div style={{ position: "relative", zIndex: 2 }}>
-    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-      
-      {/* LABEL */}
-      <div style={styles.sectionLabel}>
-        <span style={styles.sectionLabelLine} /> Amenities
-      </div>
-
-      {/* TITLE */}
-      <h2 style={{ ...styles.sectionTitle, color: "#1a1a1a" }}>
-        Crafted for{" "}
-        <span style={{ ...styles.sectionTitleAccent, color: "#b40000" }}>
-          Extraordinary
-        </span>{" "}
-        Living
-      </h2>
-
-   {/* SUBTEXT (NEW — IMPORTANT) */}
-    <p
-  style={{
-    maxWidth: "700px",
-    margin: "0 0 50px 0", // remove auto centering
-    fontSize: "14px",
-    color: "#c1b8b8",
-    lineHeight: 1.8,
-    fontFamily: "'Montserrat', sans-serif",
-    textAlign: "left",
-  }}
->
-Not just amenities - a private ecosystem designed to elevate everyday living into an experience of comfort, prestige, and effortless luxury.</p>
-      {/* GRID */}
-      <div style={styles.amenitiesGrid} className="amenities-grid">
-        {amenities.map((a, i) => (
-  <div key={`${a.title}-${i}`} style={styles.amenityCard}className="amenity-hover">
-            
-            {/* ICON WRAPPER */}
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                background: "rgba(180,0,0,0.06)",
-                marginBottom: "18px",
-              }}
-            >
-              {a.icon}
-            </span>
-
-            {/* CONTENT */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <div style={styles.amenityTitle}>{a.title}</div>
-              <div style={styles.amenityDesc}>{a.desc}</div>
-            </div>
-
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</div>
-
-      {/* LOCATION */}
-      <div id="location" style={{ background: "#0a0a0a", padding: "80px 40px" }}>
-        <div style={{ ...styles.locationSection, maxWidth: "1200px", margin: "0 auto", gridTemplateColumns: "1fr 1fr" }} className="location-section">
-          <div>
-            <div style={styles.sectionLabel}><span style={styles.sectionLabelLine} /> Location</div>
-            <h2 style={styles.sectionTitle}>Sector 71, <span style={styles.sectionTitleAccent}>SPR Gurgaon</span></h2>
-            <p style={styles.sectionBody}>Positioned at the intersection of everything that matters in Gurugram - corporate corridors, lifestyle destinations, and seamless connectivity to NCR and beyond.</p>
-            <ul style={styles.locationList}>
-              {locationPoints.map((p, i) => (
-  <li key={`${p.text}-${i}`} style={styles.locationItem}>
-    <span className="location-icon">
-  {p.icon}
-</span>
-    <span>{p.text}</span>
-  </li>
-))}
-            </ul>
-          </div>
-          <div style={styles.locationMapBox}>
-  
-  {/* MAP IMAGE */}
-  <img
-    src="/images/lambo/location-map.png"
-    alt="Location Map"
-    style={{
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      position: "absolute",
-      inset: 0,
-      zIndex: 0,
-    }}
-  />
-
-  {/* DARK OVERLAY (IMPORTANT) */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(to top, rgba(10,10,10,0.85), rgba(10,10,10,0.2))",
-      zIndex: 1,
-    }}
-  />
-
-  {/* LOCATION PIN */}
-  <div
-    style={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 2,
-    }}
-  >
-    <div className="map-pin" />
-  </div>
-
-  {/* LABEL */}
-  <div style={styles.mapLabel}>
-    SECTOR 71 · SOUTHERN PERIPHERAL ROAD · GURUGRAM
-  </div>
-</div>
-        </div>
-      </div>
-<section id="invest"
-  style={{
-    position: "relative",
-    padding: "110px 40px",
-    overflow: "hidden",
-  }}
->
-  {/* 🎥 BACKGROUND VIDEO */}
-  <video
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{
-      position: "absolute",
-      inset: 0,
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      zIndex: 0,
-      filter: "brightness(0.5) contrast(1.1)", // 🔥 lighter
-    }}
-  >
-    <source src="/videos/lambo/invest-bg.mp4" />
-  </video>
-
-  {/* 🔥 LIGHTER OVERLAY */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(180deg, rgba(10,10,10,0.65), rgba(15,4,4,0.75))",
-      zIndex: 1,
-    }}
-  />
-
-  {/* ✨ TOP FADE (NEW — DEPTH) */}
-  <div
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      height: "120px",
-      background:
-        "linear-gradient(to bottom, rgba(0,0,0,0.4), transparent)",
-      zIndex: 1,
-    }}
-  />
-
-  {/* ✨ RED AMBIENT GLOW */}
-  <div
-    style={{
-      position: "absolute",
-      top: "30%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      width: "600px",
-      height: "600px",
-      background:
-        "radial-gradient(circle, rgba(180,0,0,0.12), transparent 70%)",
-      zIndex: 1,
-    }}
-  />
-
-  {/* 📦 CONTENT */}
-  <div style={{ position: "relative", zIndex: 2 }}>
-    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-      
-      {/* LABEL */}
-      <div style={styles.sectionLabel}>
-        <span style={styles.sectionLabelLine} /> Investment Case
-      </div>
-
-      {/* TITLE */}
-      <h2 style={styles.sectionTitle}>
-        Why <span style={styles.sectionTitleAccent}>Smart Capital</span> Is Moving Here
-      </h2>
-
-      {/* 🔥 COMPRESSED POWER COPY */}
-      <p
-        style={{
-          maxWidth: "640px",
-          marginBottom: "50px",
-          color: "#e0d2b8", // 🔥 brighter text
-          lineHeight: 1.7,
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: "14px",
-        }}
-      >
-        The next global luxury drop has arrived in India.  
-        Limited supply meets rising global demand in Gurugram.
-      </p>
-
-      {/* GRID */}
-      <div
-        style={{
-          ...styles.reasonsGrid,
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "22px", // 🔥 more breathing
-          background: "transparent",
-        }}
-        className="reasons-grid"
-      >
-        {reasons.map((r, i) => (
-  <div
-    key={`${r.title}-${i}`}
-            style={{
-              ...styles.reasonCard,
-              background: "rgba(255,255,255,0.04)", // very light glass
-backdropFilter: "blur(14px)",
-WebkitBackdropFilter: "blur(14px)",
-border: "1px solid rgba(255,255,255,0.08)",
-boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
-              borderRadius: "12px",
-              transition: "all 0.4s ease",
-            }}
-            className="reasonCard"
-          >
-            <div style={styles.reasonNum}>0{i + 1}</div>
-
-            <div>
-              <div style={styles.reasonTitle}>{r.title}</div>
-
-              <div
-                style={{
-                  ...styles.reasonBody,
-                  color: "#a89880", // 🔥 improved readability
-                }}
-              >
-                {r.body}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
-      {/* FORM */}
-      <div id="contact" style={styles.formSection}>
-        <div style={styles.formGlow} />
-        <div style={styles.formInner}>
-          <div style={{ ...styles.sectionLabel, justifyContent: "center" }}>
-            <span style={styles.sectionLabelLine} /> Register Interest <span style={styles.sectionLabelLine} />
-          </div>
-          <h2 style={{ ...styles.formTitle }}>
-            Claim Your <span style={styles.sectionTitleAccent}>Priority Access</span>
-          </h2>
-          {submitted ? (
-            <div style={{ textAlign: "center", padding: "48px 0" }}>
-              <div style={{ fontSize: "48px", marginBottom: "16px" }}>✓</div>
-              <div style={{ fontSize: "22px", color: "#f5f0e8", marginBottom: "12px" }}>Thank you, {formData.name}.</div>
-              <p style={{ color: "#a89880", fontFamily: "Montserrat,sans-serif", fontSize: "14px" }}>Our luxury sales team will contact you within 24 hours.</p>
-            </div>
-          ) : (
-            <>
-              <div style={{ ...styles.formGrid, gridTemplateColumns: "1fr 1fr" }} className="form-grid">
-                <input style={styles.formInput} placeholder="Your Full Name *" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-                <input style={styles.formInput} placeholder="Phone Number *" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
-                <input style={{ ...styles.formInput, gridColumn: "1 / -1" }} placeholder="Email Address" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-                <select style={styles.formSelect} value={formData.config} onChange={e => setFormData({ ...formData, config: e.target.value })}>
-                  <option value="">Select Configuration</option>
-                  <option>3 BHK — 2,000+ sq.ft. (₹5 Cr+)</option>
-                  <option>4 BHK — 2,400+ sq.ft. (₹6 Cr+)</option>
-                  <option>4 BHK + Utility — 2,800 sq.ft. (₹7 Cr+)</option>
-                </select>
-                <textarea style={{ ...styles.formInput, gridColumn: "1 / -1", height: "100px", resize: "none" } as React.CSSProperties} placeholder="Any specific requirements..." value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} />
-              </div>
-              <button style={styles.formSubmit} className="btn-hover" onClick={handleSubmit}>
-                Request Priority Callback
-              </button>
-              <p style={styles.formNote}>Your information is completely confidential. No spam, ever.</p>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* FOOTER */}
-      <footer style={styles.footer}>
-        <div style={styles.footerInner}>
-          <div style={{ ...styles.footerTop, gridTemplateColumns: "2fr 1fr 1fr" }} className="footer-top">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-  
-  <img
-    src="/images/lambo/lamborghini-logo.png"
-    alt="Lamborghini Residences"
-    style={{
-      height: "40px",
-      width: "auto",
-      opacity: 0.9,
-      filter: "brightness(0.95)",
-    }}
-  />
-
-
-</div>
-              <div style={styles.footerBrandSub}>Sector 71, SPR · Gurugram</div>
-              <p style={styles.footerBody}>An exclusive collaboration between Tonino Lamborghini and Signature Global - bringing the Italian spirit of boldness, precision, and prestige to the Gurgaon skyline.</p>
-            </div>
-            <div>
-              <div style={styles.footerHeading}>Quick Links</div>
-             <ul style={styles.footerLinks}>
-  {[
-    { label: "Overview", id: "overview" },
-    { label: "Apartments", id: "apartments" },
-    { label: "Amenities", id: "amenities" },
-    { label: "Location", id: "location" },
-    { label: "Investment Case", id: "invest" },
-    { label: "Contact", id: "contact" },
-  ].map((l) => (
-    <li key={l.label}>
-      <a
-        href={`#${l.id}`}
-        style={{
-          ...styles.footerLink,
-          textDecoration: "none",
-          display: "inline-block",
-        }}
-      >
-        {l.label}
-      </a>
-    </li>
-  ))}
-</ul>
-            </div>
-            <div>
-              <div style={styles.footerHeading}>Contact</div>
-              <ul style={styles.footerLinks}>
-                <li style={{ ...styles.footerLink, color: "#b40000" }}>Mark Real Estate</li>
-                <li style={styles.footerLink}>Shankar Kohli</li>
-                <li style={styles.footerLink}>Founder & Director</li>
-                <li style={{ ...styles.footerLink, marginTop: "12px" }}>📞 +91 98114 22554</li>
-                <li style={styles.footerLink}>📧 info@markrealestate.com</li>
-              </ul>
-            </div>
-          </div>
-          <p style={styles.disclaimerText}>
-            *Disclaimer: All information provided is for general informational purposes only and may be subject to change without notice. This project may not be RERA registered at present. Prices are indicative and subject to revision. Interested buyers are advised to independently verify all project details with the developer. Mark Real Estate shall not be liable for any decisions made based on this information.
-          </p>
-          <p style={styles.footerMarketer}>
-Marketed by{" "}
-<a
-  href="/"
-  target="_blank"
-  rel="noopener noreferrer"
-  style={{
-    ...styles.footerMarketerName,
-    textDecoration: "none",
-    borderBottom: "1px solid rgba(180,0,0,0.4)",
-  }}
->
-  Shankar Kohli
-</a>{" "}
-· Founder,{" "}
-<a
-  href="https://markrealesstate.com/"
-  target="_blank"
-  rel="noopener noreferrer"
-  style={{
-    ...styles.footerMarketerName,
-    textDecoration: "none",
-    borderBottom: "1px solid rgba(180,0,0,0.4)",
-  }}
->
-  Mark Real Estate
-</a>{" "}
-· Gurgaon's Ultra-Luxury Real Estate Specialists          </p>
-        </div>
-      </footer>
     </div>
   );
 }
-
-
-function FormComponent() {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState({
-    name: "",
-    phone: "",
-    city: "",
-    budget: "",
-    config: "",
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    field: keyof typeof data
-  ) => {
-    setData({ ...data, [field]: e.target.value });
-  };
-
-  return (
-    <div
-      style={{
-        position: "relative",
-        padding: "42px 34px",
-        border: "1px solid rgba(180,0,0,0.25)",
-        background:
-          "linear-gradient(180deg, rgba(34, 31, 31, 0.36), rgba(0, 0, 0, 0.58))",
-        boxShadow: "0 30px 80px rgba(0,0,0,0.7)",
-        backdropFilter: "blur(1px)",
-        overflow: "hidden",
-      }}
-    >
-      {/* 🔴 TOP GLOW LINE */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "2px",
-          background: "linear-gradient(90deg, #b40000, transparent)",
-        }}
-      />
-
-      {/* STEP */}
-      <div
-        style={{
-          fontSize: "10px",
-          letterSpacing: "0.4em",
-          color: "#b40000",
-          marginBottom: "20px",
-          fontFamily: "'Montserrat', sans-serif",
-        }}
-      >
-        STEP {step} / 2
-      </div>
-
-      {/* PROGRESS BAR */}
-      <div
-        style={{
-          height: "2px",
-          background: "rgba(255,255,255,0.08)",
-          marginBottom: "26px",
-        }}
-      >
-        <div
-          style={{
-            width: step === 1 ? "50%" : "100%",
-            height: "100%",
-            background: "#b40000",
-            transition: "0.4s ease",
-          }}
-        />
-      </div>
-
-      <AnimatePresence mode="wait">
-        {/* STEP 1 */}
-        {step === 1 && (
-          <motion.div
-            key="1"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5 }}
-          >
-            <FormInput
-              placeholder="Full Name"
-              onChange={(e) => handleChange(e, "name")}
-            />
-            <FormInput
-              placeholder="Phone Number"
-              onChange={(e) => handleChange(e, "phone")}
-            />
-            <FormInput
-              placeholder="City"
-              onChange={(e) => handleChange(e, "city")}
-            />
-
-            <button style={styles.formSubmit} onClick={() => setStep(2)}>
-              Continue →
-            </button>
-            
-          </motion.div>
-        )}
-
-        {/* STEP 2 */}
-        {step === 2 && (
-          <motion.div
-            key="2"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5 }}
-          >
-            <FormSelect onChange={(e) => handleChange(e, "budget")}>
-              <option>Budget Range</option>
-              <option>₹5–6 Cr</option>
-              <option>₹6–8 Cr</option>
-              <option>₹8 Cr+</option>
-            </FormSelect>
-
-            <FormSelect onChange={(e) => handleChange(e, "config")}>
-              <option>Configuration</option>
-              <option>3 BHK</option>
-              <option>4 BHK</option>
-            </FormSelect>
-
-            <button
-              style={styles.formSubmit}
-              onClick={() => {
-                console.log(data);
-                alert("Lead Captured ✅");
-              }}
-            >
-              Get Details
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* TRUST LINE */}
-      <div
-        style={{
-          marginTop: "24px",
-          fontSize: "11px",
-          color: "rgba(245,240,232,0.6)",
-          textAlign: "center",
-          letterSpacing: "0.2em",
-          fontFamily: "'Montserrat', sans-serif",
-        }}
-      >
-        RERA APPROVED · NO SPAM · INSTANT CALLBACK
-      </div>
-    </div>
-  );
-}
-
-function FormInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      {...props}
-      style={{
-        width: "100%",
-        marginBottom: "22px",
-        padding: "14px 0",
-        background: "transparent",
-        border: "none",
-        borderBottom: "1px solid rgba(180,0,0,0.5)" ,
-        color: "#f5f0e8",
-        fontSize: "14px",
-        fontFamily: "'Montserrat', sans-serif",
-        outline: "none",
-        transition: "all 0.3s ease",
-      }}
-    />
-  );
-}
-
-function FormSelect(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <select
-      {...props}
-      style={{
-        width: "100%",
-        marginBottom: "22px",
-        padding: "14px 0",
-        background: "transparent",
-        border: "none",
-        borderBottom: "1px solid rgba(180,0,0,0.25)",
-        color: "#f5f0e8",
-        fontSize: "14px",
-        fontFamily: "'Montserrat', sans-serif",
-      }}
-    />
-  );
-}
-
-const btnPrimary = {
-  width: "100%",
-  padding: "16px",
-  background: "linear-gradient(135deg, #b40000, #7a0000)",
-  border: "none",
-  color: "#fff",
-  fontSize: "11px",
-  letterSpacing: "0.3em",
-  fontFamily: "'Montserrat', sans-serif",
-  cursor: "pointer",
-  marginTop: "10px",
-  transition: "all 0.3s ease",
-};
 
