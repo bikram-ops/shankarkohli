@@ -927,6 +927,7 @@ useEffect(() => {
                 opacity: isActive ? 1 : 0,
                 x: isActive ? 0 : i < activeIndex ? -220 : 220,
                 position: isActive ? "relative" : "absolute",
+                pointerEvents: isActive ? "auto" : "none", 
               }}
               transition={{ duration: 0.4 }}
               className="w-full"
