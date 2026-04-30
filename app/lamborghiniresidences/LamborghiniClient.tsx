@@ -1004,20 +1004,28 @@ const amenities = [
   },
 ];
 const locationPoints = [
-  { text: "Golf Course Extension Road — 5 min" },
-  { text: "IGI Airport — 35 min via NH-48" },
-  { text: "Cyber Hub / Cyber City — 20 min" },
-  { text: "Top Schools & Hospitals — 10 min" },
-  { text: "Premium Malls & Dining — 5 min" },
-  { text: "Sohna Road & NH-48 — Direct Access" },
+  { text: "Golf Course Ext. · 5m" },
+  { text: "Cyber City · 20m" },
+  { text: "Airport · 35m" },
+  { text: "NH-48 · Direct" },
 ];
 const reasons = [
-  { title: "The Lamborghini Name", body: "Globally iconic brand driving long-term value." },
-  { title: "SPR – Gurgaon's Gold Corridor", body: "High-growth corridor with strong appreciation potential." },
-  { title: "Extraordinary Scarcity", body: "Limited inventory ensures rarity-driven demand." },
-  { title: "Signature Global Track Record", body: "Trusted developer with consistent delivery history." },
-  { title: "Curated Luxury Ecosystem", body: "Lifestyle-led amenities designed for elite living." },
-  { title: "Long-Term Asset Growth", body: "Positioned for strong capital appreciation over time." },
+  {
+    title: "Prime Location",
+    body: "Located in Gurugram’s high-growth corridor.",
+  },
+  {
+    title: "Limited Inventory",
+    body: "Low supply ensures long-term value.",
+  },
+  {
+    title: "Strong Appreciation",
+    body: "Consistent price growth in premium segment.",
+  },
+  {
+    title: "Luxury Demand",
+    body: "High interest from global buyers.",
+  },
 ];
 export default function LamborghiniClient() {
 
@@ -1850,54 +1858,31 @@ letterSpacing: "-0.01em",
         Becomes Advantage
       </h2>
 
-      {/* SUBTEXT */}
-      <p
-        style={{
-          maxWidth: "480px",
-          marginBottom: "40px",
-          fontSize: "clamp(13px, 1.1vw, 14px)",
-          color: "#9a9488",
-          lineHeight: 1.7,
-          fontWeight: 300,
-        }}
-      >
-        At the center of Gurugram’s fastest-growing luxury corridor.
-      </p>
 
       {/* LIST */}
       <ul
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-        }}
-      >
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "14px 32px",
+    marginTop: "20px",
+  }}
+>
         {locationPoints.map((p, i) => (
-          <li
-            key={`${p.text}-${i}`}
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "12px",
-              color: "#d6d0c4",
-              fontSize: "clamp(14px, 1vw, 15px)",
-              fontWeight: 400,
-              lineHeight: 1.6,
-            }}
-          >
-            <span
-              style={{
-                width: "7px",
-                height: "7px",
-                background: "#d6d0c4",
-                borderRadius: "50%",
-                marginTop: "6px",
-                flexShrink: 0,
-              }}
-            />
-            {p.text}
-          </li>
-        ))}
+  <li
+    key={`${p.text}-${i}`}
+    style={{
+      listStyle: "none",
+      fontSize: "clamp(13px, 0.9vw, 14px)",
+      color: "rgba(214,208,196,0.65)",
+      fontWeight: 300,
+      lineHeight: 1.6,
+      letterSpacing: "0.02em",
+    }}
+  >
+    {p.text}
+  </li>
+))}
       </ul>
     </div>
 
@@ -2019,45 +2004,43 @@ letterSpacing: "-0.01em",
         Investment Case
       </div>
 
-      {/* TITLE (FIXED) */}
-      <h2
-        style={{
-          fontSize: "clamp(26px, 3.2vw, 40px)",
-          fontWeight: 300,
-          color: "#f5f3ef",
-          marginBottom: "18px",
-          lineHeight: 1.2,
-          letterSpacing: "-0.01em",
-        }}
-      >
-        Why <span style={{ fontStyle: "italic" }}>Smart Capital</span> Is Moving Here
-      </h2>
+     {/* TITLE */}
+<h2
+  style={{
+    fontSize: "clamp(26px, 3.2vw, 40px)",
+    fontWeight: 300,
+    color: "#f5f3ef",
+    marginBottom: "14px", // 🔥 slightly tighter
+    lineHeight: 1.2,
+    letterSpacing: "-0.01em",
+  }}
+>
+  Why <span style={{ fontStyle: "italic" }}>Smart Capital</span> Is Moving Here
+</h2>
 
-      {/* POWER LINE (FIXED) */}
-      <p
-        style={{
-          fontSize: "clamp(15px, 1.2vw, 17px)",
-          color: "#d6d0c4",
-          marginBottom: "16px",
-        }}
-      >
-        Limited supply. Global demand. Strategic location.
-      </p>
+{/* POWER LINE */}
+<p
+  style={{
+    fontSize: "clamp(15px, 1.2vw, 17px)",
+    color: "#d6d0c4",
+    marginBottom: "28px", // 🔥 give breathing space
+  }}
+>
+  Limited supply. Global demand.
+</p>
 
-      {/* SUBTEXT (REFINED) */}
-      <p
-        style={{
-          maxWidth: "600px",
-          marginBottom: "60px",
-          fontSize: "clamp(13px, 1vw, 15px)",
-          color: "#a89880",
-          lineHeight: 1.8,
-        }}
-      >
-        The next global luxury drop has arrived in India.  
-        Positioned in Gurugram’s fastest-growing corridor with strong appreciation potential.
-      </p>
-
+{/* SUBTEXT */}
+<p
+  style={{
+    maxWidth: "520px", // 🔥 tighter = more premium
+    marginBottom: "60px",
+    fontSize: "clamp(13px, 1vw, 15px)",
+    color: "#a89880",
+    lineHeight: 1.7,
+  }}
+>
+  Located in Gurugram’s fastest-growing corridor.
+</p>
       {/* GRID */}
       <motion.div
         initial="hidden"
@@ -2325,22 +2308,22 @@ letterSpacing: "-0.01em",
   style={{
     fontSize: "12px",
     color: "#666",
-    marginTop: "14px",
+    marginTop: "12px",
     textAlign: "center",
-    lineHeight: 1.6,
   }}
 >
-  Your information is handled with complete discretion. By submitting, you agree to our{" "}
+  By submitting, you agree to our{" "}
   <a
     href="/privacy-policy"
     style={{
       color: "#c8a96a",
       textDecoration: "none",
-      
+      borderBottom: "1px solid rgba(200,169,106,0.4)",
     }}
   >
     Privacy Policy
-  </a>.
+  </a>
+  .
 </p>
       </>
     )}
@@ -2466,20 +2449,19 @@ letterSpacing: "-0.01em",
       }}
     />
 
-    {/* DISCLAIMER */}
-    <p
-      style={{
-        fontSize: "12px",
-        color: "#666",
-        lineHeight: 1.6,
-        textAlign: "center",
-        maxWidth: "700px",
-        margin: "0 auto 18px",
-        fontWeight: 300,
-      }}
-    >
-      *Prices and availability are subject to change. Please verify all project details with the developer before making any decision.
-    </p>
+   <p
+  style={{
+    fontSize: "clamp(11px, 1.2vw, 12px)",
+    color: "#666",
+    lineHeight: 1.5,
+    textAlign: "center",
+    margin: "0 auto 16px",
+    fontWeight: 300,
+    padding: "0 10px",
+  }}
+>
+  *Prices & availability may change. Verify details before booking.
+</p>
 
     {/* MARKETER */}
     <p
