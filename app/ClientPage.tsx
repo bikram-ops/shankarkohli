@@ -870,7 +870,8 @@ useEffect(() => {
 
 {/* ═════════ CASE STUDIES (ELITE VERSION) ═════════ */}
 <section
-  id="case-studies"
+  id="case-studies" 
+  data-section="case-studies"
   className="py-24 md:py-32 px-5 bg-[#0e0e0e]"
 >
   <div className="max-w-6xl mx-auto text-center">
