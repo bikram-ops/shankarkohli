@@ -41,9 +41,7 @@ export default function Footer() {
           <p className="text-[#C8A45A] text-[10px] tracking-[0.35em] mb-2">
             NAVIGATION
           </p>
-  <a href="/#about" className="text-[#8A8A8A] text-sm hover:text-[#E8E2D9] transition">
-            About Me
-          </a>
+
           <a href="/#investors" className="text-[#8A8A8A] text-sm hover:text-[#E8E2D9] transition">
             Investors
           </a>

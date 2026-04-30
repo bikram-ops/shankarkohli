@@ -17,7 +17,7 @@ export default function Header() {
   const router = useRouter();
 
   const navItems = [
-    { label: "ABOUT ME", href: "#about" },
+    { label: "INVESTORS", href: "#investors" },
     { label: "OPPORTUNITIES", href: "#new-launch" },
     { label: "CASE STUDIES", href: "#case-studies" },
     { label: "INSIGHTS", href: "#insights" },
