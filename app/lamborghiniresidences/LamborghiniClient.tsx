@@ -1898,7 +1898,7 @@ letterSpacing: "-0.01em",
     >
       {/* MAP IMAGE */}
       <img
-        src="/images/lambo/location-map.jpg"
+        src="/images/lambo/location-map.png"
         alt="Location Map"
         style={{
           width: "100%",

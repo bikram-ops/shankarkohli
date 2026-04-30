@@ -406,11 +406,11 @@ useEffect(() => {
   Book Deep-Dive
 </button>
 
-      <button
-  onClick={() => scrollToSection("deals")}
+     <button
+  onClick={() => (window.location.href = "/case-studies")}
   className="flex-1 border border-white/30 text-white py-3 text-sm tracking-[0.08em]"
 >
-  View Projects
+  Case Studies
 </button>
 
     </div>
